@@ -10,7 +10,8 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { loadFont } from "@remotion/google-fonts/PlusJakartaSans";
+import { loadFont as loadSora } from "@remotion/google-fonts/Sora";
+import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import {
   ArrowRight,
   Bell,
@@ -25,7 +26,6 @@ import {
   PenLine,
   Route,
   Send,
-  ShoppingBag,
   Utensils,
   Wallet,
   Zap,
@@ -33,12 +33,20 @@ import {
 } from "lucide-react";
 
 /* ────────────────────────────────────────────────────────────
-   KAND AI — Premium product commercial (1080×1920 @ 30fps)
+   KAND AI — Product commercial (1080×1920 @ 30fps)
+   Style mengikuti kandai.my.id: latar putih, ink #0a0a0a,
+   hijau #00c853, font Sora (judul) + Inter (isi), tombol pill,
+   kartu gelap untuk chat/jurnal. Outro memakai blok gelap
+   seperti .cta-block di situs.
    Semua animasi deterministik berdasarkan frame.
    ──────────────────────────────────────────────────────────── */
 
-const { fontFamily } = loadFont("normal", {
-  weights: ["500", "600", "700", "800"],
+const { fontFamily: DISPLAY } = loadSora("normal", {
+  weights: ["600", "700", "800"],
+  subsets: ["latin"],
+});
+const { fontFamily: BODY } = loadInter("normal", {
+  weights: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -68,23 +76,33 @@ export const SFX_CUES = [
   { frame: 515, type: "pop", note: "benar +XP" },
   { frame: 600, type: "whoosh", note: "ring menjadi logo" },
   { frame: 643, type: "impact", note: "wordmark outro" },
-  { frame: 643 + 32, type: "pop", note: "CTA URL" },
+  { frame: 675, type: "pop", note: "CTA URL" },
 ];
 
-/* ── Palet ── */
+/* ── Token warna (dari :root situs) ── */
 const C = {
-  bg: "#071411",
-  bg2: "#0B211A",
-  em: "#10B981",
-  mint: "#34D399",
-  text: "#ECFDF5",
-  muted: "#A7B7B0",
-  line: "rgba(167,183,176,0.16)",
-  dark: "#04130E",
-  amber: "#F59E0B",
-  sky: "#38BDF8",
-  rose: "#F87171",
+  bg: "#FFFFFF",
+  ink: "#0A0A0A",
+  ink2: "#1C1C1E",
+  ink3: "#2C2C2E",
+  muted: "#636366",
+  faint: "#AEAEB2",
+  ghost: "#F2F2F7",
+  green: "#00C853",
+  greenD: "#00A846",
+  greenBg: "rgba(0,200,83,0.10)",
+  greenBd: "rgba(0,200,83,0.25)",
+  blue: "#0A84FF",
+  blueBg: "rgba(10,132,255,0.10)",
+  red: "#FF453A",
+  redBg: "rgba(255,69,58,0.10)",
+  amber: "#FF9F0A",
+  amberBg: "rgba(255,159,10,0.12)",
+  line: "rgba(0,0,0,0.08)",
 };
+const SH_MD = "0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)";
+const SH_XL = "0 24px 64px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.07)";
+const disp: React.CSSProperties = { fontFamily: DISPLAY, letterSpacing: "-0.025em" };
 
 /* ── Helper animasi ── */
 const clampX = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -102,10 +120,11 @@ const SOFT: SpCfg = { damping: 16, stiffness: 140, mass: 0.8 };
 const BOUNCY: SpCfg = { damping: 10, stiffness: 150, mass: 0.8 };
 
 const cardStyle: React.CSSProperties = {
-  background: "linear-gradient(180deg,#0F2D23 0%,#0B211A 100%)",
+  background: C.bg,
   border: `1.5px solid ${C.line}`,
   borderRadius: 40,
   boxSizing: "border-box",
+  boxShadow: SH_MD,
 };
 
 const fmtRp = (n: number) =>
@@ -191,62 +210,64 @@ const Mark: React.FC<{
   frameP?: number;
   kP?: number;
   showFrame?: boolean;
-}> = ({ size, frameP = 1, kP = 1, showFrame = true }) => (
+  ink?: string;
+}> = ({ size, frameP = 1, kP = 1, showFrame = true, ink = C.ink }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
     {showFrame && (
       <>
-        <path d={SQ} fill={C.em} opacity={0.14 * frameP} />
-        <Stroke d={SQ} p={frameP} c={C.mint} />
+        <path d={SQ} fill={C.green} opacity={0.12 * frameP} />
+        <Stroke d={SQ} p={frameP} c={C.green} />
       </>
     )}
-    <Stroke d="M38 30 V70" p={ip(kP, [0, 0.5], [0, 1])} c={C.text} w={6} />
-    <Stroke d="M40 52 L63 33" p={ip(kP, [0.3, 0.75], [0, 1])} c={C.text} w={6} />
-    <Stroke d="M40 52 L64 70" p={ip(kP, [0.5, 1], [0, 1])} c={C.text} w={6} />
-    <circle cx={69} cy={28} r={5.5 * ip(kP, [0.7, 1], [0, 1], easeOut)} fill={C.mint} />
+    <Stroke d="M38 30 V70" p={ip(kP, [0, 0.5], [0, 1])} c={ink} w={6} />
+    <Stroke d="M40 52 L63 33" p={ip(kP, [0.3, 0.75], [0, 1])} c={ink} w={6} />
+    <Stroke d="M40 52 L64 70" p={ip(kP, [0.5, 1], [0, 1])} c={ink} w={6} />
+    <circle cx={69} cy={28} r={5.5 * ip(kP, [0.7, 1], [0, 1], easeOut)} fill={C.green} />
   </svg>
 );
 
-/* ── Latar bersama (frame global) ── */
+/* ── Latar bersama (frame global): putih → ink untuk outro ── */
 const Background: React.FC = () => {
   const f = useCurrentFrame();
+  const dark = ip(f, [558, 580], [0, 1], easeIO);
   const dx = Math.sin(f / 80) * 70;
   const dy = Math.cos(f / 100) * 50;
   return (
-    <AbsoluteFill style={{ background: C.bg }}>
+    <AbsoluteFill style={{ background: interpolateColors(dark, [0, 1], [C.bg, C.ink]) }}>
       <div
         style={{
           position: "absolute",
-          width: 1200,
-          height: 1200,
-          left: -420 + dx,
+          width: 1300,
+          height: 1000,
+          left: 80 + dx,
           top: -300 + dy,
           borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(16,185,129,0.14) 0%, rgba(16,185,129,0) 62%)",
+          opacity: 1 - dark,
+          background: "radial-gradient(ellipse, rgba(0,200,83,0.10) 0%, rgba(0,200,83,0) 62%)",
         }}
       />
       <div
         style={{
           position: "absolute",
           width: 1100,
-          height: 1100,
-          right: -460 - dx,
-          bottom: -260 - dy,
+          height: 900,
+          left: -420 - dx,
+          top: 1250 - dy,
           borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(52,211,153,0.10) 0%, rgba(52,211,153,0) 62%)",
+          opacity: 1 - dark,
+          background: "radial-gradient(ellipse, rgba(10,132,255,0.07) 0%, rgba(10,132,255,0) 62%)",
         }}
       />
-      <AbsoluteFill
+      <div
         style={{
-          backgroundImage: `linear-gradient(${C.line} 1px, transparent 1px), linear-gradient(90deg, ${C.line} 1px, transparent 1px)`,
-          backgroundSize: "108px 108px",
-          backgroundPosition: `${f * 0.25}px ${f * 0.45}px`,
-          opacity: 0.35,
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, black 20%, transparent 75%)",
-          maskImage:
-            "radial-gradient(ellipse at center, black 20%, transparent 75%)",
+          position: "absolute",
+          width: 1500,
+          height: 1100,
+          left: -210,
+          top: -380,
+          borderRadius: "50%",
+          opacity: dark,
+          background: "radial-gradient(ellipse, rgba(0,200,83,0.22) 0%, rgba(0,200,83,0) 60%)",
         }}
       />
     </AbsoluteFill>
@@ -259,7 +280,11 @@ const Wordmark: React.FC<{
   size: number;
   start: number;
   rippleAt: number;
-}> = ({ top, size, start, rippleAt }) => {
+  c1: string;
+  h1: string;
+  c2: string;
+  h2: string;
+}> = ({ top, size, start, rippleAt, c1, h1, c2, h2 }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const letters = "KAND AI".split("");
@@ -284,8 +309,6 @@ const Wordmark: React.FC<{
           [rippleAt + i * 2, rippleAt + i * 2 + 5, rippleAt + i * 2 + 12],
           [0, 1, 0],
         );
-        const base = isAI ? C.mint : C.text;
-        const hot = isAI ? "#FFFFFF" : "#6EE7B7";
         return (
           <span
             key={i}
@@ -299,11 +322,12 @@ const Wordmark: React.FC<{
             <span
               style={{
                 display: "inline-block",
+                fontFamily: DISPLAY,
                 fontSize: size,
                 fontWeight: 800,
                 lineHeight: 1.18,
-                letterSpacing: 4,
-                color: interpolateColors(flash, [0, 1], [base, hot]),
+                letterSpacing: 2,
+                color: interpolateColors(flash, [0, 1], [isAI ? c2 : c1, isAI ? h2 : h1]),
                 transform: `translateY(${(1 - p) * 115}%) translateY(${-10 * flash}px)`,
               }}
             >
@@ -329,12 +353,13 @@ const S1_CHIPS: {
   from: [number, number];
   rot: number;
   tint: string;
+  tintBg: string;
 }[] = [
-  { Icon: MessageCircle, title: "Kepalaku penuh banget…", sub: "Pikiran", left: 60, top: 560, w: 640, from: [-800, 0], rot: -5, tint: C.mint },
-  { Icon: Wallet, title: "Uang jajan sisa berapa?", sub: "Keuangan", left: 380, top: 760, w: 640, from: [800, -120], rot: 4, tint: C.amber },
-  { Icon: BookOpen, title: "Kuis & tugas besok", sub: "Belajar", left: 70, top: 980, w: 580, from: [-700, 520], rot: 3, tint: C.sky },
-  { Icon: PenLine, title: "Belum nulis jurnal", sub: "Cerita hari ini", left: 410, top: 1200, w: 600, from: [700, 700], rot: -4, tint: C.mint },
-  { Icon: Bell, title: "3 pengingat", sub: "Hari ini", left: 150, top: 1420, w: 440, from: [0, 900], rot: 6, tint: C.rose },
+  { Icon: MessageCircle, title: "Kepalaku penuh banget…", sub: "Pikiran", left: 60, top: 560, w: 640, from: [-800, 0], rot: -5, tint: C.greenD, tintBg: C.greenBg },
+  { Icon: Wallet, title: "Uang jajan sisa berapa?", sub: "Keuangan", left: 380, top: 760, w: 640, from: [800, -120], rot: 4, tint: C.amber, tintBg: C.amberBg },
+  { Icon: BookOpen, title: "Materi & kuis besok", sub: "Belajar", left: 70, top: 980, w: 580, from: [-700, 520], rot: 3, tint: C.blue, tintBg: C.blueBg },
+  { Icon: PenLine, title: "Belum nulis jurnal", sub: "Cerita hari ini", left: 410, top: 1200, w: 600, from: [700, 700], rot: -4, tint: C.greenD, tintBg: C.greenBg },
+  { Icon: Bell, title: "3 pengingat", sub: "Hari ini", left: 150, top: 1420, w: 440, from: [0, 900], rot: 6, tint: C.red, tintBg: C.redBg },
 ];
 
 const Scene1: React.FC = () => {
@@ -367,11 +392,12 @@ const Scene1: React.FC = () => {
             <span
               key={i}
               style={{
+                ...disp,
                 display: "inline-block",
                 fontSize: 92,
                 fontWeight: 800,
                 lineHeight: 1.1,
-                color: i === words.length - 1 ? C.mint : C.text,
+                color: i === words.length - 1 ? C.greenD : C.ink,
                 opacity: ip(f, [d, d + 5], [0, 1]),
                 transform: `translateY(${(1 - p) * 80}px) rotate(${(1 - p) * 4}deg)`,
               }}
@@ -389,7 +415,7 @@ const Scene1: React.FC = () => {
           top: 392,
           textAlign: "center",
           fontSize: 46,
-          fontWeight: 600,
+          fontWeight: 500,
           color: C.muted,
           opacity: ip(f, [22, 34], [0, 1]) * (1 - titleOut),
           transform: `translateY(${(1 - ip(f, [22, 34], [0, 1], easeOut)) * 30 - 70 * titleOut}px)`,
@@ -437,7 +463,7 @@ const Scene1: React.FC = () => {
                   width: 80,
                   height: 80,
                   borderRadius: 26,
-                  background: `${c.tint}26`,
+                  background: c.tintBg,
                   display: "grid",
                   placeItems: "center",
                   flexShrink: 0,
@@ -446,7 +472,7 @@ const Scene1: React.FC = () => {
                 <Icon size={42} color={c.tint} strokeWidth={2.2} />
               </div>
               <div>
-                <div style={{ fontSize: 36, fontWeight: 700, color: C.text, lineHeight: 1.15, whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: 36, fontWeight: 600, color: C.ink, lineHeight: 1.15, whiteSpace: "nowrap" }}>
                   {c.title}
                 </div>
                 <div style={{ fontSize: 28, color: C.muted, marginTop: 4 }}>{c.sub}</div>
@@ -485,7 +511,7 @@ const Scene2: React.FC = () => {
             width: 70,
             height: 70,
             borderRadius: "50%",
-            background: C.mint,
+            background: C.green,
             opacity: ip(f, [0, 6], [0, 1]) * (1 - ip(f, [16, 26], [0, 1])) * fade,
             transform: `scale(${ip(f, [0, 22], [1, 0.5], easeOut)})`,
           }}
@@ -505,7 +531,7 @@ const Scene2: React.FC = () => {
                 width: size,
                 height: size,
                 borderRadius: "50%",
-                border: `${3 - k * 0.5}px solid ${C.mint}`,
+                border: `${3 - k * 0.5}px solid ${C.green}`,
                 opacity: o,
               }}
             />
@@ -529,14 +555,14 @@ const Scene2: React.FC = () => {
                 width: sz,
                 height: sz,
                 borderRadius: "50%",
-                background: i % 3 === 0 ? C.text : C.mint,
-                opacity: ip(f, [0, 10], [0, 0.8]) * fade,
+                background: i % 3 === 0 ? C.ink : C.green,
+                opacity: ip(f, [0, 10], [0, 0.75]) * fade,
               }}
             />
           );
         })}
 
-        {/* mark */}
+        {/* mark (K berubah putih saat terbang ke header chat gelap) */}
         <div
           style={{
             position: "absolute",
@@ -547,12 +573,11 @@ const Scene2: React.FC = () => {
             transform: `translate(${-410 * exit}px,${-390 * exit}px) scale(${lerp(1, 0.277, exit)})`,
           }}
         >
-          <Mark size={260} frameP={frameP} kP={kP} />
+          <Mark size={260} frameP={frameP} kP={kP} ink={interpolateColors(exit, [0, 1], [C.ink, "#FFFFFF"])} />
         </div>
 
         <div style={{ opacity: fade }}>
-          <Wordmark top={960} size={156} start={34} rippleAt={62} />
-          {/* garis highlight */}
+          <Wordmark top={960} size={156} start={34} rippleAt={62} c1={C.ink} h1={C.green} c2={C.green} h2={C.ink} />
           <div
             style={{
               position: "absolute",
@@ -561,14 +586,19 @@ const Scene2: React.FC = () => {
               top: 1152,
               height: 5,
               borderRadius: 3,
-              background: `linear-gradient(90deg, transparent, ${C.mint}, transparent)`,
+              background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
             }}
           />
-          <Pop delay={52} y={40} style={{ position: "absolute", left: 0, width: 1080, top: 1190, textAlign: "center", fontSize: 66, fontWeight: 700, color: C.text }}>
-            Satu AI, <span style={{ color: C.mint }}>Banyak Solusi.</span>
+          <Pop delay={52} y={40} style={{ ...disp, position: "absolute", left: 0, width: 1080, top: 1190, textAlign: "center", fontSize: 66, fontWeight: 700, color: C.ink }}>
+            Satu AI, <span style={{ color: C.greenD }}>Banyak Solusi.</span>
           </Pop>
           <Pop delay={62} y={30} style={{ position: "absolute", left: 0, width: 1080, top: 1292, textAlign: "center", fontSize: 42, fontWeight: 500, color: C.muted }}>
-            Asisten AI untuk aktivitas harianmu.
+            Teman AI pribadi untuk hidup yang lebih baik.
+          </Pop>
+          <Pop delay={72} y={24} s={0.85} cfg={BOUNCY} style={{ position: "absolute", left: 0, width: 1080, top: 1390, display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 34, fontWeight: 600, color: C.greenD, background: C.greenBg, border: `1.5px solid ${C.greenBd}`, padding: "14px 30px", borderRadius: 999 }}>
+              <MessageCircle size={34} /> Terhubung dengan WhatsApp
+            </div>
           </Pop>
         </div>
       </AbsoluteFill>
@@ -580,8 +610,8 @@ const Scene2: React.FC = () => {
    SCENE 3 — TEMAN CERITA & JURNAL
    ════════════════════════════════════════════════════════════ */
 const FLAT_Y = 860; // garis penghubung S3 → S4
-const USER_MSG = "Hari ini kepalaku penuh banget...";
-const AI_MSG = "Cerita pelan-pelan aja. Kita urai satu per satu.";
+const USER_MSG = "Hari ini lumayan melelahkan, banyak meeting tapi produktif juga sih.";
+const AI_MSG = "Sudah kusimpan di jurnalmu. Mood-nya kutandai campur aduk.";
 
 const bez = (t: number, p0: number[], p1: number[], p2: number[], p3: number[]) => {
   const u = 1 - t;
@@ -598,99 +628,104 @@ const Scene3: React.FC = () => {
   const dots = ip(f, [50, 54], [0, 1]) * (1 - ip(f, [70, 74], [0, 1]));
   const lineP = ip(f, [146, 164], [0, 1], easeIO);
   const cp = ip(f, [98, 114], [0, 1], easeIO);
-  const P0 = [180, 858], P1 = [30, 880], P2 = [30, 940], P3 = [180, 975];
+  const P0 = [170, 864], P1 = [30, 900], P2 = [30, 960], P3 = [180, 1005];
   const dot = bez(cp, P0, P1, P2, P3);
   const benefits: [LucideIcon, string][] = [
-    [MessageCircle, "Teman berbincang kapan saja"],
-    [Brain, "Membantu merapikan pikiran"],
-    [PenLine, "Jurnal cerita & perasaan"],
-    [Heart, "Informasi kesehatan umum"],
+    [MessageCircle, "Curhat seperti chat biasa"],
+    [Heart, "Mood ditandai otomatis"],
+    [PenLine, "Jurnal tersimpan rapi"],
+    [Brain, "Info kesehatan umum"],
   ];
 
   return (
     <AbsoluteFill>
       <Out at={148} len={14} x={-80} s={0.96}>
-        <Pop delay={10} x={-90} y={0} style={{ position: "absolute", left: 0, width: 1080, top: 150, textAlign: "center", fontSize: 84, fontWeight: 800, color: C.text }}>
-          Teman Cerita <span style={{ color: C.mint }}>& Jurnal</span>
+        <Pop delay={10} x={-90} y={0} style={{ ...disp, position: "absolute", left: 0, width: 1080, top: 150, textAlign: "center", fontSize: 84, fontWeight: 800, color: C.ink }}>
+          Teman Cerita <span style={{ color: C.greenD }}>& Jurnal</span>
         </Pop>
 
-        {/* panel chat tumbuh dari avatar */}
+        {/* panel chat gelap (gaya phone mockup situs), tumbuh dari avatar */}
         <div
           style={{
-            ...cardStyle,
             position: "absolute",
             left: 70,
             top: 330,
             width: 940,
-            height: 580,
+            height: 600,
+            borderRadius: 44,
+            background: "#111111",
+            border: "1px solid rgba(255,255,255,0.07)",
+            boxShadow: SH_XL,
+            overflow: "hidden",
             opacity: ip(f, [4, 10], [0, 1]),
             transformOrigin: "60px 60px",
             transform: `scale(${lerp(0.12, 1, grow)})`,
           }}
         >
-          <div style={{ position: "absolute", left: 120, top: 28, opacity: ip(f, [24, 32], [0, 1]) }}>
-            <div style={{ fontSize: 38, fontWeight: 800, color: C.text }}>KAND AI</div>
-            <div style={{ fontSize: 26, color: C.mint, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 12, height: 12, borderRadius: 6, background: C.mint, display: "inline-block" }} />
+          <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 120, background: "#1A1A1A", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+          <div style={{ position: "absolute", left: 120, top: 26, opacity: ip(f, [24, 32], [0, 1]) }}>
+            <div style={{ ...disp, fontSize: 38, fontWeight: 700, color: "#FFFFFF" }}>KAND AI</div>
+            <div style={{ fontSize: 26, color: C.green, display: "flex", alignItems: "center", gap: 8, fontWeight: 500 }}>
+              <span style={{ width: 12, height: 12, borderRadius: 6, background: C.green, display: "inline-block" }} />
               online
             </div>
           </div>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 120, height: 1.5, background: C.line }} />
 
-          {/* pesan user */}
-          <Pop delay={28} x={90} y={0} style={{ position: "absolute", right: 36, top: 150, maxWidth: 600 }}>
-            <div style={{ background: C.em, color: C.dark, fontSize: 42, fontWeight: 700, lineHeight: 1.3, padding: "24px 34px", borderRadius: "38px 38px 10px 38px" }}>
-              {USER_MSG}
-            </div>
-          </Pop>
+          {/* area pesan: flex column supaya bubble tidak saling menimpa */}
+          <div style={{ position: "absolute", left: 36, right: 36, top: 150, display: "flex", flexDirection: "column", gap: 24 }}>
+            <Pop delay={28} x={90} y={0} style={{ alignSelf: "flex-end", maxWidth: 660 }}>
+              <div style={{ background: "#1E1E1E", color: "#E5E5EA", fontSize: 36, fontWeight: 500, lineHeight: 1.3, padding: "22px 30px", borderRadius: "34px 34px 10px 34px" }}>
+                {USER_MSG}
+              </div>
+            </Pop>
 
-          {/* indikator mengetik */}
-          <div
-            style={{
-              position: "absolute",
-              left: 36,
-              top: 310,
-              display: "flex",
-              gap: 12,
-              padding: "26px 32px",
-              background: "#143A2E",
-              borderRadius: "38px 38px 38px 10px",
-              opacity: dots,
-            }}
-          >
-            {[0, 1, 2].map((k) => (
-              <span
-                key={k}
+            <div style={{ position: "relative", alignSelf: "flex-start", maxWidth: 660 }}>
+              {/* balasan AI (ketik per huruf, ukuran penuh sudah dipesan) */}
+              <div
                 style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: 9,
-                  background: C.muted,
-                  transform: `translateY(${Math.sin(f / 3 - k * 1.1) * 7}px)`,
+                  background: "#003D20",
+                  border: "1px solid rgba(0,200,83,0.2)",
+                  color: "#D4EDDA",
+                  fontSize: 36,
+                  fontWeight: 500,
+                  lineHeight: 1.3,
+                  padding: "22px 30px",
+                  borderRadius: "34px 34px 34px 10px",
+                  opacity: ip(f, [72, 74], [0, 1]),
                 }}
-              />
-            ))}
-          </div>
-
-          {/* balasan AI (ketik per huruf) */}
-          <div
-            style={{
-              position: "absolute",
-              left: 36,
-              top: 310,
-              maxWidth: 680,
-              background: "#143A2E",
-              color: C.text,
-              fontSize: 42,
-              fontWeight: 600,
-              lineHeight: 1.3,
-              padding: "26px 34px",
-              borderRadius: "38px 38px 38px 10px",
-              opacity: ip(f, [72, 74], [0, 1]),
-            }}
-          >
-            <span>{AI_MSG.slice(0, typed)}</span>
-            <span style={{ opacity: 0 }}>{AI_MSG.slice(typed)}</span>
+              >
+                <span>{AI_MSG.slice(0, typed)}</span>
+                <span style={{ opacity: 0 }}>{AI_MSG.slice(typed)}</span>
+              </div>
+              {/* indikator mengetik */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  display: "flex",
+                  gap: 12,
+                  padding: "26px 32px",
+                  background: "#003D20",
+                  border: "1px solid rgba(0,200,83,0.2)",
+                  borderRadius: "34px 34px 34px 10px",
+                  opacity: dots,
+                }}
+              >
+                {[0, 1, 2].map((k) => (
+                  <span
+                    key={k}
+                    style={{
+                      width: 18,
+                      height: 18,
+                      borderRadius: 9,
+                      background: "#8FD6A9",
+                      transform: `translateY(${Math.sin(f / 3 - k * 1.1) * 7}px)`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -699,34 +734,33 @@ const Scene3: React.FC = () => {
           <path
             d={`M${P0[0]} ${P0[1]} C${P1[0]} ${P1[1]}, ${P2[0]} ${P2[1]}, ${P3[0]} ${P3[1]}`}
             fill="none"
-            stroke={C.mint}
+            stroke={C.green}
             strokeWidth={4}
             strokeLinecap="round"
             strokeDasharray="1"
             strokeDashoffset={1 - cp}
             pathLength={1}
-            opacity={0.8}
           />
-          {cp > 0 && cp < 1 && <circle cx={dot[0]} cy={dot[1]} r={10} fill={C.text} />}
+          {cp > 0 && cp < 1 && <circle cx={dot[0]} cy={dot[1]} r={11} fill={C.green} />}
         </svg>
 
-        {/* kartu jurnal */}
-        <Pop delay={106} y={70} s={0.94} cfg={BOUNCY} style={{ position: "absolute", left: 70, top: 960, width: 940 }}>
-          <div style={{ ...cardStyle, height: 270, padding: "34px 40px", position: "relative" }}>
+        {/* kartu jurnal gelap (gaya .feat-large-card.dark) */}
+        <Pop delay={106} y={70} s={0.94} cfg={BOUNCY} style={{ position: "absolute", left: 70, top: 990, width: 940 }}>
+          <div style={{ background: C.ink, borderRadius: 40, height: 270, padding: "34px 40px", boxSizing: "border-box", boxShadow: SH_XL }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <PenLine size={44} color={C.mint} />
-              <div style={{ fontSize: 40, fontWeight: 700, color: C.text, flex: 1 }}>Jurnal hari ini</div>
+              <PenLine size={44} color={C.green} />
+              <div style={{ ...disp, fontSize: 40, fontWeight: 700, color: "#FFFFFF", flex: 1 }}>Jurnal hari ini</div>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
                   fontSize: 30,
-                  fontWeight: 700,
-                  color: C.dark,
-                  background: C.mint,
+                  fontWeight: 600,
+                  color: C.ink,
+                  background: C.green,
                   padding: "8px 20px",
-                  borderRadius: 40,
+                  borderRadius: 999,
                   opacity: ip(f, [138, 144], [0, 1]),
                   transform: `scale(${spring({ frame: f - 138, fps, config: BOUNCY })})`,
                 }}
@@ -735,14 +769,17 @@ const Scene3: React.FC = () => {
               </div>
             </div>
             {[85, 58].map((w, k) => (
-              <div key={k} style={{ height: 18, borderRadius: 9, background: "rgba(167,183,176,0.16)", marginTop: k === 0 ? 30 : 16 }}>
-                <div style={{ height: 18, borderRadius: 9, background: "rgba(167,183,176,0.5)", width: `${w * ip(f, [116 + k * 8, 136 + k * 8], [0, 1], easeOut)}%` }} />
+              <div key={k} style={{ height: 18, borderRadius: 9, background: "rgba(255,255,255,0.10)", marginTop: k === 0 ? 30 : 16 }}>
+                <div style={{ height: 18, borderRadius: 9, background: "rgba(255,255,255,0.45)", width: `${w * ip(f, [116 + k * 8, 136 + k * 8], [0, 1], easeOut)}%` }} />
               </div>
             ))}
             <div style={{ display: "flex", gap: 14, marginTop: 26 }}>
-              {["Pikiran penuh", "Capek"].map((t, k) => (
+              {[
+                ["Campur aduk", C.blue, C.blueBg, "rgba(10,132,255,0.3)"],
+                ["Produktif", C.green, C.greenBg, C.greenBd],
+              ].map(([t, col, bg, bd], k) => (
                 <Pop key={t} delay={128 + k * 6} y={14} s={0.8} cfg={BOUNCY}>
-                  <div style={{ fontSize: 30, fontWeight: 600, color: C.mint, background: "rgba(52,211,153,0.14)", padding: "8px 22px", borderRadius: 30 }}>{t}</div>
+                  <div style={{ fontSize: 30, fontWeight: 600, color: col, background: bg, border: `1px solid ${bd}`, padding: "8px 22px", borderRadius: 999 }}>{t}</div>
                 </Pop>
               ))}
             </div>
@@ -751,21 +788,18 @@ const Scene3: React.FC = () => {
 
         {/* manfaat */}
         {benefits.map(([Icon, label], i) => (
-          <Pop key={label} delay={54 + i * 9} x={-60} y={0} style={{ position: "absolute", left: 90, top: 1320 + i * 100, display: "flex", alignItems: "center", gap: 22 }}>
-            <div style={{ width: 66, height: 66, borderRadius: 22, background: "rgba(52,211,153,0.14)", display: "grid", placeItems: "center" }}>
-              <Icon size={34} color={C.mint} strokeWidth={2.3} />
+          <Pop key={label} delay={54 + i * 9} x={-60} y={0} style={{ position: "absolute", left: 90, top: 1330 + i * 100, display: "flex", alignItems: "center", gap: 22 }}>
+            <div style={{ width: 66, height: 66, borderRadius: 22, background: C.greenBg, border: `1.5px solid ${C.greenBd}`, display: "grid", placeItems: "center" }}>
+              <Icon size={34} color={C.greenD} strokeWidth={2.3} />
             </div>
-            <div style={{ fontSize: 42, fontWeight: 600, color: C.text }}>{label}</div>
+            <div style={{ fontSize: 42, fontWeight: 600, color: C.ink }}>{label}</div>
           </Pop>
         ))}
-        <Pop delay={92} y={20} style={{ position: "absolute", left: 90, top: 1745, fontSize: 30, color: C.muted }}>
-          Bukan pengganti dokter atau tenaga medis.
-        </Pop>
       </Out>
 
       {/* avatar (menerima mark dari adegan 2) */}
       <div style={{ position: "absolute", left: 94, top: 354, opacity: ip(f, [16, 19], [0, 1]) * (1 - ip(f, [148, 162], [0, 1])) }}>
-        <Mark size={72} />
+        <Mark size={72} ink="#FFFFFF" />
       </div>
 
       {/* garis → grafik keuangan */}
@@ -777,7 +811,7 @@ const Scene3: React.FC = () => {
           top: FLAT_Y - 4,
           height: 8,
           borderRadius: 4,
-          background: C.mint,
+          background: C.green,
         }}
       />
     </AbsoluteFill>
@@ -813,86 +847,69 @@ const Scene4: React.FC = () => {
   const line = smooth(pts);
   const last = pts[pts.length - 1];
   const areaO = ip(f, [30, 60], [0, 1]) * (1 - e);
-  const rows: [LucideIcon, string, string, string][] = [
-    [Utensils, "Makan", "Rp25.000", C.amber],
-    [Bus, "Transportasi", "Rp15.000", C.sky],
-    [ShoppingBag, "Belanja", "Rp80.000", C.rose],
+  const rows: [LucideIcon, string, string, boolean][] = [
+    [Utensils, "Makan & belanja", "-Rp1.240.000", false],
+    [Bus, "Transportasi", "-Rp480.000", false],
+    [Wallet, "Gaji bulan ini", "+Rp7.500.000", true],
   ];
-  const wallets: [string, string, string][] = [
-    ["Tunai", "Rp250.000", C.em],
-    ["Bank", "Rp1.100.000", C.sky],
-    ["E-wallet", "Rp430.000", C.amber],
-  ];
-  const exp = ip(f, [34, 84], [0, 120000], easeOut);
+  const saldo = ip(f, [34, 84], [0, 5780000], easeOut);
+  const used = 23 * ip(f, [60, 100], [0, 1], easeOut);
 
   return (
     <AbsoluteFill>
       <Out at={124} len={12} y={60} s={0.97}>
-        <Pop delay={4} y={-60} style={{ position: "absolute", left: 90, width: 900, top: 150, textAlign: "center", fontSize: 88, fontWeight: 800, lineHeight: 1.08, color: C.text }}>
-          Keuangan lebih <span style={{ color: C.mint }}>teratur.</span>
+        <Pop delay={4} y={-60} style={{ ...disp, position: "absolute", left: 90, width: 900, top: 150, textAlign: "center", fontSize: 88, fontWeight: 800, lineHeight: 1.08, color: C.ink }}>
+          Keuangan lebih <span style={{ color: C.greenD }}>teratur.</span>
         </Pop>
 
         {/* chat pill → transaksi */}
         <Pop delay={10} x={90} y={0} style={{ position: "absolute", right: 90, top: 380 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, background: C.em, color: C.dark, fontSize: 40, fontWeight: 700, padding: "22px 36px", borderRadius: "36px 36px 10px 36px" }}>
-            Tadi makan siang 25 ribu <Send size={36} />
+          <div style={{ display: "flex", alignItems: "center", gap: 16, background: C.ink, color: "#FFFFFF", fontSize: 40, fontWeight: 500, padding: "22px 36px", borderRadius: "36px 36px 10px 36px" }}>
+            beli kopi 18rb <Send size={36} />
           </div>
         </Pop>
 
-        {/* kartu pengeluaran */}
+        {/* kartu saldo */}
         <Pop delay={18} y={60} style={{ position: "absolute", left: 70, top: 500, width: 940 }}>
           <div style={{ ...cardStyle, height: 400, padding: "36px 44px" }}>
-            <div style={{ fontSize: 34, color: C.muted, fontWeight: 600 }}>Pengeluaran hari ini</div>
-            <div style={{ fontSize: 104, fontWeight: 800, color: C.text, marginTop: 6, letterSpacing: -2 }}>{fmtRp(exp)}</div>
+            <div style={{ fontSize: 34, color: C.muted, fontWeight: 500 }}>Saldo bersih</div>
+            <div style={{ ...disp, fontSize: 104, fontWeight: 800, color: C.ink, marginTop: 6, letterSpacing: -3 }}>{fmtRp(saldo)}</div>
           </div>
         </Pop>
 
-        {/* anggaran */}
+        {/* porsi pengeluaran */}
         <Pop delay={40} y={30} style={{ position: "absolute", left: 90, width: 900, top: 930 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 32, fontWeight: 600, color: C.muted }}>
-            <span>Anggaran harian</span>
-            <span style={{ color: C.mint }}>{Math.round(60 * ip(f, [60, 100], [0, 1], easeOut))}%</span>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 32, fontWeight: 500, color: C.muted }}>
+            <span>Pengeluaran dari gaji</span>
+            <span style={{ color: C.greenD, fontWeight: 700 }}>{Math.round(used)}%</span>
           </div>
-          <div style={{ height: 26, borderRadius: 13, background: "rgba(167,183,176,0.16)", marginTop: 14 }}>
-            <div style={{ height: 26, borderRadius: 13, background: `linear-gradient(90deg,${C.em},${C.mint})`, width: `${60 * ip(f, [60, 100], [0, 1], easeOut)}%` }} />
+          <div style={{ height: 26, borderRadius: 13, background: "rgba(0,0,0,0.07)", marginTop: 14 }}>
+            <div style={{ height: 26, borderRadius: 13, background: `linear-gradient(90deg,${C.greenD},${C.green})`, width: `${used}%` }} />
           </div>
         </Pop>
-
-        {/* dompet */}
-        {wallets.map(([n, a, c], i) => (
-          <Pop key={n} delay={64 + i * 6} y={50} cfg={BOUNCY} style={{ position: "absolute", left: 70 + i * 321, top: 1040, width: 298 }}>
-            <div style={{ ...cardStyle, borderRadius: 32, height: 150, padding: "22px 24px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <Wallet size={34} color={c} />
-                <span style={{ fontSize: 32, fontWeight: 700, color: C.text }}>{n}</span>
-              </div>
-              <div style={{ fontSize: 36, fontWeight: 800, color: c, marginTop: 18 }}>{a}</div>
-            </div>
-          </Pop>
-        ))}
 
         {/* transaksi (baris pertama terbang dari chat pill) */}
-        {rows.map(([Icon, label, amt, c], i) => (
+        {rows.map(([Icon, label, amt, pos], i) => (
           <Pop
             key={label}
             delay={38 + i * 14}
             x={i === 0 ? 120 : 160}
-            y={i === 0 ? -760 : 40}
+            y={i === 0 ? -640 : 40}
             s={i === 0 ? 0.7 : 0.95}
             cfg={SOFT}
-            style={{ position: "absolute", left: 70, top: 1220 + i * 126, width: 940 }}
+            style={{ position: "absolute", left: 70, top: 1080 + i * 128, width: 940 }}
           >
             <div style={{ ...cardStyle, borderRadius: 34, height: 110, display: "flex", alignItems: "center", gap: 22, padding: "0 30px" }}>
-              <div style={{ width: 70, height: 70, borderRadius: 24, background: `${c}26`, display: "grid", placeItems: "center" }}>
-                <Icon size={36} color={c} />
+              <div style={{ width: 70, height: 70, borderRadius: 24, background: pos ? C.greenBg : C.redBg, display: "grid", placeItems: "center" }}>
+                <Icon size={36} color={pos ? C.greenD : C.red} />
               </div>
-              <div style={{ fontSize: 42, fontWeight: 700, color: C.text, flex: 1 }}>{label}</div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: C.text }}>-{amt}</div>
+              <div style={{ fontSize: 40, fontWeight: 600, color: C.ink, flex: 1 }}>{label}</div>
+              <div style={{ fontSize: 40, fontWeight: 700, color: pos ? C.greenD : C.red }}>{amt}</div>
             </div>
           </Pop>
         ))}
 
-        <Pop delay={78} y={24} style={{ position: "absolute", left: 90, width: 900, top: 1640, textAlign: "center", fontSize: 38, lineHeight: 1.45, fontWeight: 600, color: C.mint }}>
+        <Pop delay={78} y={24} style={{ position: "absolute", left: 90, width: 900, top: 1530, textAlign: "center", fontSize: 40, lineHeight: 1.45, fontWeight: 600, color: C.greenD }}>
           Catat lewat chat · Banyak dompet
           <br />
           Riwayat transaksi · Dashboard keuangan
@@ -902,25 +919,18 @@ const Scene4: React.FC = () => {
         </Pop>
       </Out>
 
-      {/* grafik: dimulai dari garis datar S3, lalu menjadi bar progres S5 */}
+      {/* grafik: dimulai dari garis datar S3, lalu menjadi bar roadmap S5 */}
       {f >= 10 && (
         <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0 }}>
           <defs>
             <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={C.em} stopOpacity={0.32} />
-              <stop offset="100%" stopColor={C.em} stopOpacity={0} />
+              <stop offset="0%" stopColor={C.green} stopOpacity={0.22} />
+              <stop offset="100%" stopColor={C.green} stopOpacity={0} />
             </linearGradient>
           </defs>
           <path d={`${line} L${last[0]} 884 L${pts[0][0]} 884 Z`} fill="url(#chartFill)" opacity={areaO} />
-          <path d={line} fill="none" stroke={C.mint} strokeWidth={lerp(8, 22, e)} strokeLinecap="round" strokeLinejoin="round" />
-          <circle
-            cx={last[0]}
-            cy={last[1]}
-            r={13 * ip(f, [62, 74], [0, 1]) * (1 - e)}
-            fill={C.text}
-            stroke={C.mint}
-            strokeWidth={5}
-          />
+          <path d={line} fill="none" stroke={C.green} strokeWidth={lerp(8, 22, e)} strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx={last[0]} cy={last[1]} r={13 * ip(f, [62, 74], [0, 1]) * (1 - e)} fill="#FFFFFF" stroke={C.green} strokeWidth={5} />
         </svg>
       )}
     </AbsoluteFill>
@@ -949,7 +959,7 @@ const Scene5: React.FC = () => {
     [Route, "Roadmap"],
   ];
 
-  // fill bar → ring (morph)
+  // fill bar → ring (morph menuju outro)
   const fw = 900 * p;
   const fillStyle: React.CSSProperties = {
     position: "absolute",
@@ -959,8 +969,8 @@ const Scene5: React.FC = () => {
     width: lerp(fw, 300, m),
     height: lerp(22, 300, m),
     borderRadius: lerp(11, 150, m),
-    border: `${lerp(0, 22, m)}px solid ${C.mint}`,
-    background: `rgba(52,211,153,${1 - m})`,
+    border: `${lerp(0, 22, m)}px solid ${C.green}`,
+    background: `rgba(0,200,83,${1 - m})`,
     opacity: barOn,
   };
 
@@ -968,7 +978,7 @@ const Scene5: React.FC = () => {
     <AbsoluteFill>
       {/* track + node roadmap */}
       <div style={{ opacity: barOn * nodesOut }}>
-        <div style={{ position: "absolute", left: 90, top: BAR_Y - 11, width: 900, height: 22, borderRadius: 11, background: "rgba(167,183,176,0.16)" }} />
+        <div style={{ position: "absolute", left: 90, top: BAR_Y - 11, width: 900, height: 22, borderRadius: 11, background: "rgba(0,0,0,0.08)" }} />
       </div>
       <div style={fillStyle} />
       <div style={{ opacity: barOn * nodesOut }}>
@@ -990,13 +1000,13 @@ const Scene5: React.FC = () => {
                 boxSizing: "border-box",
                 display: "grid",
                 placeItems: "center",
-                background: done ? C.mint : C.bg2,
-                border: done ? "none" : `4px solid rgba(167,183,176,0.35)`,
+                background: done ? C.green : "#FFFFFF",
+                border: done ? "none" : "4px solid rgba(0,0,0,0.15)",
                 transform: `scale(${sc})`,
                 opacity: ip(f, [16 + k * 3, 22 + k * 3], [0, 1]),
               }}
             >
-              {done && <Check size={28} color={C.dark} strokeWidth={4} />}
+              {done && <Check size={28} color={C.ink} strokeWidth={4} />}
               {!done && k === 4 && <GraduationCap size={26} color={C.muted} />}
             </div>
           );
@@ -1004,29 +1014,28 @@ const Scene5: React.FC = () => {
       </div>
 
       <Out at={138} len={12} y={-50}>
-        {/* judul: masuk dari kanan, per baris */}
         {["Belajar Jadi", "Lebih Terarah."].map((t, i) => (
-          <Pop key={t} delay={18 + i * 6} x={130} y={0} style={{ position: "absolute", left: 0, width: 1080, top: 140 + i * 100, textAlign: "center", fontSize: 88, fontWeight: 800, lineHeight: 1.1, color: i ? C.mint : C.text }}>
+          <Pop key={t} delay={18 + i * 6} x={130} y={0} style={{ ...disp, position: "absolute", left: 0, width: 1080, top: 140 + i * 100, textAlign: "center", fontSize: 88, fontWeight: 800, lineHeight: 1.1, color: i ? C.greenD : C.ink }}>
             {t}
           </Pop>
         ))}
 
         <Pop delay={30} y={30} style={{ position: "absolute", left: 90, top: 510 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 32, fontWeight: 600, color: C.text, background: "rgba(167,183,176,0.12)", padding: "14px 26px", borderRadius: 40 }}>
-            <BookOpen size={32} color={C.mint} /> Pelajaran 3 · Dasar Menabung
+          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 32, fontWeight: 600, color: C.ink, background: C.ghost, padding: "14px 26px", borderRadius: 999 }}>
+            <BookOpen size={32} color={C.greenD} /> Pelajaran 3 · Dasar Menabung
           </div>
         </Pop>
-        <div style={{ position: "absolute", right: 90, top: 510, transform: `scale(${1 + 0.18 * ip(f, [100, 106, 114], [0, 1, 0])})` , transformOrigin: "right center", opacity: ip(f, [30, 38], [0, 1]) }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 34, fontWeight: 800, color: C.dark, background: C.amber, padding: "12px 26px", borderRadius: 40 }}>
-            <Zap size={32} fill={C.dark} /> {xp} XP
+        <div style={{ position: "absolute", right: 90, top: 510, transform: `scale(${1 + 0.18 * ip(f, [100, 106, 114], [0, 1, 0])})`, transformOrigin: "right center", opacity: ip(f, [30, 38], [0, 1]) }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 34, fontWeight: 700, color: C.ink, background: "linear-gradient(135deg,#FFD60A,#FF9F0A)", padding: "12px 26px", borderRadius: 999 }}>
+            <Zap size={32} fill={C.ink} /> {xp} XP
           </div>
         </div>
 
         {/* kartu kuis */}
         <Pop delay={44} y={80} s={0.94} style={{ position: "absolute", left: 70, top: 640, width: 940 }}>
           <div style={{ ...cardStyle, height: 600, position: "relative", padding: "34px 36px" }}>
-            <div style={{ fontSize: 30, fontWeight: 700, color: C.mint }}>Kuis · Soal 1/3</div>
-            <div style={{ fontSize: 52, fontWeight: 800, color: C.text, marginTop: 14, lineHeight: 1.15 }}>Berapa 10% dari Rp50.000?</div>
+            <div style={{ fontSize: 30, fontWeight: 700, color: C.greenD }}>Kuis · Soal 1/3</div>
+            <div style={{ ...disp, fontSize: 52, fontWeight: 800, color: C.ink, marginTop: 14, lineHeight: 1.15 }}>Berapa 10% dari Rp50.000?</div>
             {opts.map((o, i) => {
               const right = i === 1;
               const state = picked ? (right ? "ok" : "dim") : "idle";
@@ -1041,16 +1050,16 @@ const Scene5: React.FC = () => {
                       gap: 22,
                       padding: "0 28px",
                       boxSizing: "border-box",
-                      background: state === "ok" ? "rgba(16,185,129,0.22)" : "rgba(167,183,176,0.08)",
-                      border: `3px solid ${state === "ok" ? C.mint : C.line}`,
+                      background: state === "ok" ? C.greenBg : C.ghost,
+                      border: `3px solid ${state === "ok" ? C.green : C.line}`,
                       opacity: state === "dim" ? 0.45 : 1,
                       transform: state === "ok" ? `scale(${1 + 0.03 * spring({ frame: f - 94, fps, config: BOUNCY })})` : undefined,
                     }}
                   >
-                    <div style={{ width: 56, height: 56, borderRadius: 28, display: "grid", placeItems: "center", background: state === "ok" ? C.mint : "rgba(167,183,176,0.16)", color: state === "ok" ? C.dark : C.text, fontSize: 30, fontWeight: 800 }}>
+                    <div style={{ width: 56, height: 56, borderRadius: 28, display: "grid", placeItems: "center", background: state === "ok" ? C.green : "rgba(0,0,0,0.08)", color: C.ink, fontSize: 30, fontWeight: 700 }}>
                       {state === "ok" ? <Check size={32} strokeWidth={4} /> : "ABC"[i]}
                     </div>
-                    <div style={{ fontSize: 44, fontWeight: 700, color: C.text }}>{o}</div>
+                    <div style={{ fontSize: 44, fontWeight: 600, color: C.ink }}>{o}</div>
                   </div>
                 </Pop>
               );
@@ -1060,11 +1069,11 @@ const Scene5: React.FC = () => {
               style={{
                 position: "absolute",
                 left: 330 - ip(f, [86, 98], [10, 60]),
-                top: 396 + 34 - ip(f, [86, 98], [10, 60]),
+                top: 430 - ip(f, [86, 98], [10, 60]),
                 width: ip(f, [86, 98], [20, 120]),
                 height: ip(f, [86, 98], [20, 120]),
                 borderRadius: "50%",
-                border: `4px solid ${C.mint}`,
+                border: `4px solid ${C.green}`,
                 opacity: ip(f, [86, 90, 98], [0, 0.8, 0]),
               }}
             />
@@ -1073,18 +1082,18 @@ const Scene5: React.FC = () => {
 
         {/* feedback */}
         <Pop delay={98} y={30} s={0.5} cfg={BOUNCY} style={{ position: "absolute", right: 70, top: 1210 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 40, fontWeight: 800, color: C.dark, background: C.mint, padding: "16px 34px", borderRadius: 50 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 40, fontWeight: 700, color: C.ink, background: C.green, padding: "16px 34px", borderRadius: 999, boxShadow: "0 4px 16px rgba(0,200,83,0.3)" }}>
             <Check size={38} strokeWidth={4} /> Benar! +10 XP
           </div>
         </Pop>
 
         {/* tutor AI */}
         <Pop delay={108} y={60} style={{ position: "absolute", left: 70, top: 1320, width: 940 }}>
-          <div style={{ ...cardStyle, height: 170, display: "flex", alignItems: "center", gap: 26, padding: "0 34px" }}>
-            <Mark size={84} />
+          <div style={{ background: C.ink, borderRadius: 40, height: 170, display: "flex", alignItems: "center", gap: 26, padding: "0 34px", boxSizing: "border-box", boxShadow: SH_XL }}>
+            <Mark size={84} ink="#FFFFFF" />
             <div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: C.mint }}>Tutor AI</div>
-              <div style={{ fontSize: 38, fontWeight: 600, color: C.text, lineHeight: 1.25 }}>Belum paham? Tanya kapan saja.</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: C.green }}>Tutor AI</div>
+              <div style={{ fontSize: 38, fontWeight: 600, color: "#FFFFFF", lineHeight: 1.25 }}>Belum paham? Tanya kapan saja.</div>
             </div>
           </div>
         </Pop>
@@ -1093,7 +1102,7 @@ const Scene5: React.FC = () => {
         <div style={{ position: "absolute", left: 0, width: 1080, top: 1560, display: "flex", justifyContent: "center", gap: 12 }}>
           {tags.map(([Icon, t], i) => (
             <Pop key={t} delay={60 + i * 6} y={24} cfg={BOUNCY}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 32, fontWeight: 700, color: C.mint, background: "rgba(52,211,153,0.12)", padding: "14px 20px", borderRadius: 36 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 32, fontWeight: 600, color: C.greenD, background: C.greenBg, border: `1.5px solid ${C.greenBd}`, padding: "14px 20px", borderRadius: 999 }}>
                 <Icon size={32} /> {t}
               </div>
             </Pop>
@@ -1105,7 +1114,7 @@ const Scene5: React.FC = () => {
 };
 
 /* ════════════════════════════════════════════════════════════
-   SCENE 6 — OUTRO & CTA
+   SCENE 6 — OUTRO & CTA (blok gelap seperti .cta-block situs)
    ════════════════════════════════════════════════════════════ */
 const URL_TEXT = "https://kandai.my.id";
 
@@ -1142,15 +1151,15 @@ const Scene6: React.FC = () => {
               width: sz,
               height: sz,
               borderRadius: 30,
-              background: "#143A2E",
-              border: `2px solid ${C.line}`,
+              background: C.ink2,
+              border: "1.5px solid rgba(255,255,255,0.12)",
               display: "grid",
               placeItems: "center",
               opacity: ip(f, [0, 4], [0, 1]) * (1 - ip(f, [18, 24], [0, 1])),
               transform: `scale(${lerp(1, 0.3, c)}) rotate(${(1 - c) * (i % 2 ? 25 : -25)}deg)`,
             }}
           >
-            <Icon size={48} color={C.mint} />
+            <Icon size={48} color={C.green} />
           </div>
         );
       })}
@@ -1165,17 +1174,17 @@ const Scene6: React.FC = () => {
           width: D,
           height: D,
           borderRadius: rad,
-          border: `${bw}px solid ${C.mint}`,
-          background: `rgba(16,185,129,${0.14 * t1})`,
+          border: `${bw}px solid ${C.green}`,
+          background: `rgba(0,200,83,${0.14 * t1})`,
           opacity: ip(f, [16, 19], [0, 1]),
           transform: `scale(${pulse})`,
         }}
       />
       <div style={{ position: "absolute", left: CX - 110, top: 700 - 110, opacity: ip(f, [44, 48], [0, 1]) }}>
-        <Mark size={220} showFrame={false} kP={kP} />
+        <Mark size={220} showFrame={false} kP={kP} ink="#FFFFFF" />
       </div>
 
-      <Wordmark top={860} size={150} start={56} rippleAt={80} />
+      <Wordmark top={860} size={150} start={56} rippleAt={80} c1="#FFFFFF" h1={C.green} c2={C.green} h2="#FFFFFF" />
       <div
         style={{
           position: "absolute",
@@ -1184,18 +1193,18 @@ const Scene6: React.FC = () => {
           top: 1040,
           height: 5,
           borderRadius: 3,
-          background: `linear-gradient(90deg, transparent, ${C.mint}, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${C.green}, transparent)`,
         }}
       />
 
-      <Pop delay={68} y={40} style={{ position: "absolute", left: 0, width: 1080, top: 1070, textAlign: "center", fontSize: 64, fontWeight: 700, color: C.text }}>
-        Satu AI, <span style={{ color: C.mint }}>Banyak Solusi.</span>
+      <Pop delay={68} y={40} style={{ ...disp, position: "absolute", left: 0, width: 1080, top: 1070, textAlign: "center", fontSize: 64, fontWeight: 700, color: "#FFFFFF" }}>
+        Satu AI, <span style={{ color: C.green }}>Banyak Solusi.</span>
       </Pop>
-      <Pop delay={80} y={30} style={{ position: "absolute", left: 0, width: 1080, top: 1180, textAlign: "center", fontSize: 54, fontWeight: 600, color: C.muted }}>
+      <Pop delay={80} y={30} style={{ position: "absolute", left: 0, width: 1080, top: 1180, textAlign: "center", fontSize: 54, fontWeight: 500, color: C.faint }}>
         Mulai sekarang.
       </Pop>
 
-      {/* CTA URL */}
+      {/* CTA URL (tombol pill hijau seperti .btn-green) */}
       <Pop delay={88} y={70} s={0.8} cfg={{ damping: 11, stiffness: 130, mass: 0.9 }} style={{ position: "absolute", left: 0, width: 1080, top: 1290, display: "flex", justifyContent: "center" }}>
         <div style={{ position: "relative" }}>
           <div
@@ -1203,7 +1212,7 @@ const Scene6: React.FC = () => {
               position: "absolute",
               inset: -14,
               borderRadius: 90,
-              border: `3px solid ${C.mint}`,
+              border: `3px solid ${C.green}`,
               opacity: 0.35 + 0.25 * Math.sin(f / 9),
               transform: `scale(${1 + 0.02 * Math.sin(f / 9)})`,
             }}
@@ -1214,14 +1223,16 @@ const Scene6: React.FC = () => {
               alignItems: "center",
               gap: 22,
               padding: "34px 56px",
-              borderRadius: 80,
+              borderRadius: 999,
               overflow: "hidden",
               position: "relative",
-              background: `linear-gradient(90deg, ${C.em}, ${C.mint})`,
-              color: C.dark,
+              background: C.green,
+              boxShadow: "0 4px 16px rgba(0,200,83,0.3)",
+              color: C.ink,
+              fontFamily: DISPLAY,
               fontSize: 62,
-              fontWeight: 800,
-              letterSpacing: 0.5,
+              fontWeight: 700,
+              letterSpacing: -0.5,
             }}
           >
             {URL_TEXT}
@@ -1240,6 +1251,9 @@ const Scene6: React.FC = () => {
           </div>
         </div>
       </Pop>
+      <Pop delay={100} y={20} style={{ position: "absolute", left: 0, width: 1080, top: 1480, textAlign: "center", fontSize: 38, fontWeight: 500, color: C.faint }}>
+        Gratis untuk memulai · lewat WhatsApp
+      </Pop>
     </AbsoluteFill>
   );
 };
@@ -1249,7 +1263,7 @@ const Scene6: React.FC = () => {
    ════════════════════════════════════════════════════════════ */
 export const KandAI: React.FC = () => {
   return (
-    <AbsoluteFill style={{ fontFamily, background: C.bg }}>
+    <AbsoluteFill style={{ fontFamily: BODY, background: C.bg }}>
       <Background />
       <Sequence from={T.s1.from} durationInFrames={T.s1.dur} name="1 Hook">
         <Scene1 />
