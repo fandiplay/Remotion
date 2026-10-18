@@ -1,12 +1,14 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
   Easing,
   Sequence,
   interpolate,
   interpolateColors,
   random,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -62,9 +64,7 @@ const T = {
 export const KAND_AI_DURATION = 720;
 export const KAND_AI_FPS = 30;
 
-/* ── Cue SFX (struktur saja; belum ada aset audio berlisensi) ──
-   Taruh file di public/audio/ lalu bungkus <Audio src={staticFile(...)}/>
-   di dalam <Sequence from={cue.frame}> kalau sudah ada. */
+/* ── Cue SFX (frame global, sudah memperhitungkan overlap Sequence) ── */
 export const SFX_CUES = [
   { frame: 42, type: "whoosh", note: "chip menyatu ke tengah" },
   { frame: 72, type: "pop", note: "ring pertama muncul" },
@@ -77,7 +77,32 @@ export const SFX_CUES = [
   { frame: 600, type: "whoosh", note: "ring menjadi logo" },
   { frame: 643, type: "impact", note: "wordmark outro" },
   { frame: 675, type: "pop", note: "CTA URL" },
-];
+] as const;
+
+/* ── Voice-over per scene. Start frame global dihitung dari T + delay animasi. ──
+   frames = durasi file (30 fps), dipakai untuk ducking musik. */
+const VOICE_CUES = [
+  { from: 0, file: "audio/vo-01.mp3", frames: 52 },
+  { from: 85, file: "audio/vo-02.mp3", frames: 75 },
+  { from: 153, file: "audio/vo-03.mp3", frames: 106 },
+  { from: 280, file: "audio/vo-04.mp3", frames: 126 },
+  { from: 425, file: "audio/vo-05.mp3", frames: 151 },
+  { from: 577, file: "audio/vo-06.mp3", frames: 112 },
+] as const;
+
+const SFX_FILES: Record<string, string> = {
+  whoosh: "audio/whoosh.mp3",
+  pop: "audio/pop.mp3",
+  impact: "audio/impact.mp3",
+  click: "audio/click.mp3",
+};
+
+const SFX_VOLUME: Record<string, number> = {
+  whoosh: 0.8,
+  pop: 0.65,
+  impact: 0.7,
+  click: 0.7,
+};
 
 /* ── Token warna (dari :root situs) ── */
 const C = {
@@ -1259,12 +1284,49 @@ const Scene6: React.FC = () => {
 };
 
 /* ════════════════════════════════════════════════════════════
+   AUDIO — VO, BGM (ducking), dan SFX pada frame global
+   ════════════════════════════════════════════════════════════ */
+const AudioLayer: React.FC = () => (
+  <>
+    <Audio
+      src={staticFile("audio/bgm.mp3")}
+      volume={(f) => {
+        const duck = VOICE_CUES.reduce(
+          (m, v) =>
+            Math.max(
+              m,
+              ip(
+                f,
+                [v.from - 6, v.from + 4, v.from + v.frames - 4, v.from + v.frames + 6],
+                [0, 1, 1, 0],
+              ),
+            ),
+          0,
+        );
+        return lerp(0.2, 0.11, duck);
+      }}
+    />
+    {VOICE_CUES.map((v, i) => (
+      <Sequence key={v.file} from={v.from} name={`VO ${i + 1}`}>
+        <Audio src={staticFile(v.file)} />
+      </Sequence>
+    ))}
+    {SFX_CUES.map((c, i) => (
+      <Sequence key={`${c.frame}-${c.type}`} from={c.frame} name={`SFX ${i + 1} ${c.type}`}>
+        <Audio src={staticFile(SFX_FILES[c.type])} volume={SFX_VOLUME[c.type]} />
+      </Sequence>
+    ))}
+  </>
+);
+
+/* ════════════════════════════════════════════════════════════
    ROOT COMPOSITION
    ════════════════════════════════════════════════════════════ */
 export const KandAI: React.FC = () => {
   return (
     <AbsoluteFill style={{ fontFamily: BODY, background: C.bg }}>
       <Background />
+      <AudioLayer />
       <Sequence from={T.s1.from} durationInFrames={T.s1.dur} name="1 Hook">
         <Scene1 />
       </Sequence>
