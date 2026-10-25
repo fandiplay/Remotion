@@ -1,6 +1,6 @@
 # Audio credits
 
-- **Voice-over** — generated with `edge-tts` (Microsoft `id-ID-ArdiNeural`), script written for this video. Files: `vo-01.mp3` … `vo-06.mp3`.
+- **Voice-over** — generated with `edge-tts` (Microsoft `id-ID-GadisNeural`, female), script written for this video. Files: `vo-01.mp3` … `vo-06.mp3`. Each clip is time-fitted (≤1.09× tempo) to the original narration timings so scene sync and BGM ducking are unchanged.
 - **Background music** — “Close Up” by Michael Ramir C., Mixkit Stock Music Free License. Source: <https://mixkit.co/free-stock-music/track/close-up/>. Trimmed to 24 s, faded in/out. File: `bgm.mp3`.
 - **SFX** — Mixkit Free License, preview files trimmed/normalised:
   - `whoosh.mp3` — “Fast whoosh transition” (1490), <https://mixkit.co/free-sound-effects/whoosh/>
