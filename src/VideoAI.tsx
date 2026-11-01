@@ -22,7 +22,7 @@ import {
   Check,
   FileText,
   MessageCircle,
-  ShieldCheck,
+  Search,
   Sparkles,
   TrendingDown,
   Wallet,
@@ -204,11 +204,11 @@ const particles = Array.from({ length: 26 }, (_, i) => {
 const Background: React.FC = () => {
   const f = useCurrentFrame();
   const t = f / 30;
-  const mintX = 130 + Math.sin(t * 0.42) * 100;
-  const mintY = 210 + Math.cos(t * 0.34) * 90;
-  const lavX = 980 + Math.cos(t * 0.3) * 90;
-  const lavY = 1540 + Math.sin(t * 0.37) * 110;
-  const limeY = 1050 + Math.sin(t * 0.26) * 130;
+  const mintX = 130 + Math.sin(t * 0.42) * 150;
+  const mintY = 210 + Math.cos(t * 0.34) * 120;
+  const lavX = 980 + Math.cos(t * 0.3) * 130;
+  const lavY = 1540 + Math.sin(t * 0.37) * 150;
+  const limeY = 1050 + Math.sin(t * 0.26) * 170;
   const glow = 0.9 + Math.sin(t * 0.9) * 0.12;
 
   return (
@@ -257,6 +257,19 @@ const Background: React.FC = () => {
           background:
             "radial-gradient(ellipse, rgba(215,255,78,0.075) 0%, transparent 66%)",
           filter: "blur(30px)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: 640,
+          height: 640,
+          left: 700 + Math.cos(t * 0.5) * 70,
+          top: 330 + Math.sin(t * 0.45) * 90,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(131,248,145,0.11) 0%, transparent 66%)",
+          filter: "blur(20px)",
         }}
       />
       {/* partikel naik */}
@@ -458,7 +471,7 @@ const PhoneWorld: React.FC = () => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const rise = spring({ frame: f - 0, fps, config: { damping: 18, stiffness: 85, mass: 1 } });
+  const rise = spring({ frame: f - 0, fps, config: { damping: 14, stiffness: 80, mass: 1.05 } });
   const top =
     f < 132
       ? lerp(790, 560, rise)
@@ -484,6 +497,7 @@ const PhoneWorld: React.FC = () => {
       style={{
         opacity: 1 - exit,
         transform: `translateY(${-70 * exit}px) scale(${1 - 0.08 * exit}) rotate(${rot - 3 * exit}deg)`,
+        filter: `blur(${10 * exit}px)`,
         transformOrigin: "50% 40%",
         zIndex: 2,
       }}
@@ -628,11 +642,11 @@ const PhoneWorld: React.FC = () => {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                    <Bubble at={24} side="me">
+                    <Bubble at={8} side="me">
                       Hari ini lumayan melelahkan 😮‍💨
                     </Bubble>
-                    <Typing from={40} to={58} />
-                    <Bubble at={58} side="ai">
+                    <Typing from={22} to={40} />
+                    <Bubble at={40} side="ai">
                       Sudah kusimpan di jurnalmu ✓{"\n"}
                       <span style={{ color: C.muted }}>Mood-nya kutandai campur aduk.</span>
                     </Bubble>
@@ -644,8 +658,8 @@ const PhoneWorld: React.FC = () => {
                         gap: 10,
                         paddingLeft: 6,
                         marginTop: 2,
-                        opacity: ip(f, [158, 170], [0, 1]),
-                        transform: `translateY(${(1 - spring({ frame: f - 158, fps, config: SOFT })) * 16}px)`,
+                        opacity: ip(f, [140, 152], [0, 1]),
+                        transform: `translateY(${(1 - spring({ frame: f - 140, fps, config: SOFT })) * 16}px)`,
                       }}
                     >
                       {["Senang", "Campur aduk", "Lelah"].map((m, i) => (
@@ -754,7 +768,8 @@ const S1Head: React.FC = () => {
         width: 960,
         zIndex: 6,
         opacity: 1 - out,
-        transform: `translateY(${-46 * out}px)`,
+        transform: `translateY(${-70 * out}px)`,
+        filter: `blur(${8 * out}px)`,
       }}
     >
       <Reveal delay={8} style={{ ...disp, fontSize: 88, fontWeight: 800, color: C.ink }}>
@@ -774,7 +789,7 @@ const S1Head: React.FC = () => {
 const S2Head: React.FC = () => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const out = ip(f, [178, 196], [0, 1], easeIO);
+  const out = ip(f, [168, 196], [0, 1], easeIO);
   const line = spring({ frame: f - 14, fps, config: SOFT });
   return (
     <div
@@ -785,7 +800,8 @@ const S2Head: React.FC = () => {
         width: 960,
         zIndex: 6,
         opacity: 1 - out,
-        transform: `translateY(${-42 * out}px)`,
+        transform: `translateY(${-64 * out}px)`,
+        filter: `blur(${8 * out}px)`,
       }}
     >
       <Reveal delay={4} style={{ ...disp, fontSize: 86, fontWeight: 800, color: C.ink }}>
@@ -812,7 +828,7 @@ const S2Head: React.FC = () => {
 /* ── Headline scene 3 ── */
 const S3Head: React.FC = () => {
   const f = useCurrentFrame();
-  const out = ip(f, [178, 196], [0, 1], easeIO);
+  const out = ip(f, [176, 198], [0, 1], easeIO);
   return (
     <div
       style={{
@@ -822,7 +838,8 @@ const S3Head: React.FC = () => {
         width: 960,
         zIndex: 6,
         opacity: 1 - out,
-        transform: `translateY(${-42 * out}px)`,
+        transform: `translateY(${-64 * out}px)`,
+        filter: `blur(${8 * out}px)`,
       }}
     >
       <Reveal delay={4} style={{ ...disp, fontSize: 84, fontWeight: 800, color: C.ink }}>
@@ -845,11 +862,15 @@ const DashboardScene: React.FC = () => {
   const enter = spring({ frame: f - 26, fps, config: { damping: 17, stiffness: 95, mass: 0.95 } });
   const exit = ip(f, [156, 176], [0, 1], easeIO);
   const note = spring({ frame: f - 34, fps, config: POP });
+  const balance = Math.round(ip(f, [46, 104], [0, 5780000], easeOut))
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   return (
     <AbsoluteFill
       style={{
         opacity: 1 - exit,
         transform: `translateX(${-240 * exit}px) rotate(${-3 * exit}deg)`,
+        filter: `blur(${8 * exit}px)`,
         zIndex: 3,
       }}
     >
@@ -878,7 +899,7 @@ const DashboardScene: React.FC = () => {
         style={{
           position: "absolute",
           left: 126,
-          top: 366,
+          top: 404,
           width: 760,
           padding: "18px 22px",
           borderRadius: 30,
@@ -909,16 +930,16 @@ const DashboardScene: React.FC = () => {
         style={{
           position: "absolute",
           left: 64,
-          top: 470,
+          top: 524,
           width: 952,
-          height: 1110,
+          height: 920,
           borderRadius: 42,
           background: `linear-gradient(160deg,${C.panel} 0%,#0A0C0F 100%)`,
           border: `1px solid ${C.line}`,
           boxShadow: SH.card,
           overflow: "hidden",
           opacity: ip(f, [26, 40], [0, 1]),
-          transform: `translateY(${(1 - enter) * 90}px) scale(${lerp(0.9, 1, enter)})`,
+          transform: `translateY(${(1 - enter) * 90}px) scale(${lerp(0.9, 1, enter)}) rotate(0.6deg)`,
           transformOrigin: "50% 10%",
         }}
       >
@@ -948,7 +969,7 @@ const DashboardScene: React.FC = () => {
           </div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 18, marginTop: 6 }}>
             <div style={{ ...disp, fontSize: 64, fontWeight: 700, color: C.ink }}>
-              Rp 5.780.000
+              Rp {balance}
             </div>
             <div
               style={{
@@ -985,7 +1006,7 @@ const DashboardScene: React.FC = () => {
             }}
           >
             {bars.map((h, i) => {
-              const p = spring({ frame: f - 34 - i * 3, fps, config: { damping: 16, stiffness: 90 } });
+              const p = spring({ frame: f - 40 - i * 5, fps, config: { damping: 15, stiffness: 85 } });
               return (
                 <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
                   <div
@@ -1047,15 +1068,19 @@ const DashboardScene: React.FC = () => {
 const LearningScene: React.FC = () => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const enter = spring({ frame: f - 6, fps, config: { damping: 18, stiffness: 90, mass: 0.95 } });
-  const exit = ip(f, [146, 170], [0, 1], easeIn);
-  const progress = spring({ frame: f - 30, fps, config: { damping: 20, stiffness: 55, mass: 1 } });
+  const enter = spring({ frame: f - 6, fps, config: { damping: 16, stiffness: 90, mass: 0.95 } });
+  const exit = ip(f, [146, 170], [0, 1], easeIO);
+  const progress = spring({ frame: f - 26, fps, config: { damping: 20, stiffness: 55, mass: 1 } });
+  const xp = Math.round(320 * progress);
+  const tutor = spring({ frame: f - 66, fps, config: SOFT });
+  const steps = ["Dasar", "Latihan", "Kuasai"];
 
   return (
     <AbsoluteFill
       style={{
         opacity: 1 - ip(f, [160, 176], [0, 1]),
         transform: `translateY(${-90 * exit}px) scale(${1 - 0.04 * exit})`,
+        filter: `blur(${6 * exit}px)`,
         zIndex: 3,
       }}
     >
@@ -1085,7 +1110,7 @@ const LearningScene: React.FC = () => {
           left: 70,
           top: 390,
           width: 940,
-          height: 1160,
+          height: 1040,
           borderRadius: 44,
           background: `linear-gradient(145deg, rgba(30,32,40,0.97), rgba(11,13,17,0.99))`,
           border: `1px solid ${C.line}`,
@@ -1112,18 +1137,35 @@ const LearningScene: React.FC = () => {
 
         <div
           style={{
-            marginTop: 24,
-            padding: "22px 24px",
+            marginTop: 22,
+            padding: "20px 24px",
             borderRadius: 24,
             background: "rgba(255,255,255,0.04)",
             border: `1px solid ${C.line}`,
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ ...body, fontSize: 25, fontWeight: 500, color: C.muted }}>Satu langkah kecil tiap hari</span>
-            <span style={{ ...body, fontSize: 25, fontWeight: 700, color: C.mint }}>Terus berkembang!</span>
+            <span style={{ ...body, fontSize: 24, fontWeight: 600, color: C.ink }}>
+              Level 4 · {xp}/500 XP
+            </span>
+            <span
+              style={{
+                ...body,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 21,
+                fontWeight: 700,
+                color: C.mint,
+                padding: "6px 13px",
+                borderRadius: 999,
+                background: C.mintBg,
+              }}
+            >
+              <Check size={18} strokeWidth={3} /> Kuis benar 3/3
+            </span>
           </div>
-          <div style={{ height: 12, borderRadius: 99, background: "rgba(255,255,255,0.08)", marginTop: 16, overflow: "hidden" }}>
+          <div style={{ height: 12, borderRadius: 99, background: "rgba(255,255,255,0.08)", marginTop: 14, overflow: "hidden" }}>
             <div
               style={{
                 width: `${64 * progress}%`,
@@ -1134,9 +1176,67 @@ const LearningScene: React.FC = () => {
               }}
             />
           </div>
+          <div style={{ ...body, fontSize: 21, color: C.muted, marginTop: 10 }}>
+            Satu langkah kecil tiap hari
+          </div>
         </div>
 
-        <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+          style={{
+            marginTop: 18,
+            display: "flex",
+            alignItems: "center",
+            opacity: ip(f, [32, 44], [0, 1]),
+            transform: `translateY(${(1 - spring({ frame: f - 32, fps, config: SOFT })) * 14}px)`,
+          }}
+        >
+          {steps.map((s, i) => (
+            <React.Fragment key={s}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: "50%",
+                    display: "grid",
+                    placeItems: "center",
+                    ...body,
+                    fontSize: 20,
+                    fontWeight: 700,
+                    color: i === 0 ? "#04120A" : i === 1 ? C.mint : C.faint,
+                    background: i === 0 ? C.mint : i === 1 ? C.mintBg : "rgba(255,255,255,0.05)",
+                    border: i === 1 ? `1px solid ${C.mintBd}` : "none",
+                  }}
+                >
+                  {i === 0 ? <Check size={20} strokeWidth={3} /> : i + 1}
+                </div>
+                <span
+                  style={{
+                    ...body,
+                    fontSize: 22,
+                    fontWeight: i === 1 ? 700 : 500,
+                    color: i === 2 ? C.faint : C.ink,
+                  }}
+                >
+                  {s}
+                </span>
+              </div>
+              {i < 2 && (
+                <div
+                  style={{
+                    flex: 1,
+                    height: 2,
+                    margin: "0 12px",
+                    borderRadius: 2,
+                    background: i === 0 ? C.mintBd : C.line,
+                  }}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 12 }}>
           {[
             {
               icon: <Calculator size={34} color={C.mint} strokeWidth={2} />,
@@ -1157,12 +1257,12 @@ const LearningScene: React.FC = () => {
               tint: "rgba(255,202,155,0.12)",
             },
           ].map((s, i) => {
-            const p = spring({ frame: f - 24 - i * 7, fps, config: SOFT });
+            const p = spring({ frame: f - 38 - i * 9, fps, config: SOFT });
             return (
               <div
                 key={s.title}
                 style={{
-                  height: 138,
+                  height: 118,
                   borderRadius: 26,
                   background: "rgba(255,255,255,0.035)",
                   border: `1px solid ${C.line}`,
@@ -1170,21 +1270,65 @@ const LearningScene: React.FC = () => {
                   alignItems: "center",
                   gap: 20,
                   padding: "0 24px",
-                  opacity: ip(f, [24 + i * 7, 34 + i * 7], [0, 1]),
+                  opacity: ip(f, [38 + i * 9, 50 + i * 9], [0, 1]),
                   transform: `translateY(${(1 - p) * 26}px)`,
                 }}
               >
-                <div style={{ width: 66, height: 66, borderRadius: 20, background: s.tint, display: "grid", placeItems: "center", flexShrink: 0 }}>
+                <div style={{ width: 56, height: 56, borderRadius: 18, background: s.tint, display: "grid", placeItems: "center", flexShrink: 0 }}>
                   {s.icon}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...body, fontSize: 31, fontWeight: 700, color: C.ink }}>{s.title}</div>
-                  <div style={{ ...body, fontSize: 25, fontWeight: 500, color: C.muted, marginTop: 3 }}>{s.sub}</div>
+                  <div style={{ ...body, fontSize: 29, fontWeight: 700, color: C.ink }}>{s.title}</div>
+                  <div style={{ ...body, fontSize: 23, fontWeight: 500, color: C.muted, marginTop: 3 }}>{s.sub}</div>
                 </div>
                 <ArrowRight size={28} color={C.faint} />
               </div>
             );
           })}
+        </div>
+
+        <div
+          style={{
+            marginTop: 20,
+            opacity: ip(f, [66, 78], [0, 1]),
+            transform: `translateY(${(1 - tutor) * 18}px)`,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+            <div
+              style={{
+                ...body,
+                fontSize: 21,
+                fontWeight: 500,
+                color: C.mint,
+                padding: "8px 16px",
+                borderRadius: "18px 18px 6px 18px",
+                background: C.mintBg,
+                border: `1px solid ${C.mintBd}`,
+              }}
+            >
+              Kenapa 3/4 = 0,75?
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,202,155,0.12)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+              <Bot size={24} color={C.peach} strokeWidth={2} />
+            </div>
+            <div
+              style={{
+                flex: 1,
+                padding: "12px 18px",
+                borderRadius: "18px 18px 18px 6px",
+                background: "rgba(255,255,255,0.045)",
+                border: `1px solid ${C.line}`,
+              }}
+            >
+              <div style={{ ...body, fontSize: 19, fontWeight: 700, color: C.peach }}>Tutor AI</div>
+              <div style={{ ...body, fontSize: 23, fontWeight: 500, color: C.ink, marginTop: 3, lineHeight: 1.3 }}>
+                3/4 artinya 3 ÷ 4 = 0,75. Coba lagi, kamu hampir benar!
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </AbsoluteFill>
@@ -1195,9 +1339,13 @@ const LearningScene: React.FC = () => {
 const CTAScene: React.FC = () => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const pill = spring({ frame: f - 38, fps, config: POP });
   const exit = ip(f, [170, 190], [0, 1], easeIn);
   const rings = f / 30;
+  const typed = "kand ai".slice(0, Math.max(0, Math.min(7, Math.floor((f - 62) / 6))));
+  const caret = f >= 56 && f < 112 && Math.floor(f / 8) % 2 === 0;
+  const box = spring({ frame: f - 48, fps, config: { damping: 14, stiffness: 110, mass: 0.8 } });
+  const press = 1 - 0.12 * ip(f, [104, 108], [0, 1]) * ip(f, [108, 116], [1, 0]);
+  const result = spring({ frame: f - 112, fps, config: { damping: 16, stiffness: 100 } });
 
   return (
     <AbsoluteFill
@@ -1215,7 +1363,7 @@ const CTAScene: React.FC = () => {
             key={i}
             style={{
               position: "absolute",
-              top: 920,
+              top: 1100,
               width: 860 * s,
               height: 860 * s,
               marginLeft: (1080 - 860 * s) / 2,
@@ -1230,7 +1378,7 @@ const CTAScene: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: 420,
+          top: 360,
           left: 0,
           width: 1080,
           textAlign: "center",
@@ -1238,69 +1386,115 @@ const CTAScene: React.FC = () => {
           opacity: ip(f, [0, 8], [0, 1]),
         }}
       >
-        <Reveal delay={20} style={{ ...disp, fontSize: 112, fontWeight: 800, color: C.mint }}>
-          Mulai gratis
+        <Reveal delay={26} style={{ ...disp, fontSize: 88, fontWeight: 800, color: C.ink }}>
+          Cari <span style={{ color: C.mint }}>“KAND AI”</span>
+        </Reveal>
+        <Reveal delay={32} style={{ ...disp, fontSize: 88, fontWeight: 800, color: C.ink }}>
+          di Google
         </Reveal>
         <Reveal
-          delay={26}
-          style={{ ...body, fontSize: 40, fontWeight: 500, color: C.ink, marginTop: 26, lineHeight: 1.3 }}
+          delay={40}
+          style={{ ...body, fontSize: 36, fontWeight: 500, color: C.muted, marginTop: 18, lineHeight: 1.3 }}
         >
-          Tanpa aplikasi baru. Catatanmu privat.
+          Tanpa install. Langsung ketemu.
         </Reveal>
       </div>
 
       <div
         style={{
           position: "absolute",
-          top: 742,
+          top: 690,
           left: 0,
           width: 1080,
           display: "flex",
           justifyContent: "center",
           zIndex: 6,
-          opacity: ip(f, [38, 50], [0, 1]),
-          transform: `scale(${lerp(0.88, 1, pill)}) translateY(${(1 - pill) * 22}px)`,
+          opacity: ip(f, [46, 56], [0, 1]),
+          transform: `translateY(${(1 - box) * 26}px) scale(${lerp(0.94, 1, box)})`,
         }}
       >
         <div
           style={{
+            width: 880,
+            height: 112,
             display: "flex",
             alignItems: "center",
             gap: 18,
-            padding: "26px 42px",
-            borderRadius: 999,
-            background: `linear-gradient(180deg,${C.lime} 0%,${C.mint} 55%,${C.mintD} 100%)`,
-            color: "#04120A",
-            fontFamily: DISPLAY,
-            fontSize: 38,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            boxShadow: SH.mint,
+            padding: "0 24px 0 30px",
+            borderRadius: 56,
+            background: "#FFFFFF",
+            boxShadow: "0 26px 70px rgba(0,0,0,0.5)",
           }}
         >
-          Mulai lewat WhatsApp
-          <ArrowRight size={36} strokeWidth={2.6} />
+          <Search size={38} color="#5F6368" strokeWidth={2.6} />
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              ...body,
+              fontSize: 44,
+              fontWeight: 500,
+              letterSpacing: "-0.01em",
+              color: "#202124",
+            }}
+          >
+            <span>{typed}</span>
+            <span
+              style={{
+                width: 3,
+                height: 46,
+                marginLeft: 3,
+                borderRadius: 2,
+                background: caret ? "#202124" : "transparent",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              background: `linear-gradient(180deg,${C.lime},${C.mintD})`,
+              display: "grid",
+              placeItems: "center",
+              transform: `scale(${press})`,
+              boxShadow: "0 10px 26px rgba(95,232,117,0.35)",
+            }}
+          >
+            <ArrowRight size={30} color="#04120A" strokeWidth={2.8} />
+          </div>
         </div>
       </div>
 
       <div
         style={{
           position: "absolute",
-          top: 900,
-          left: 0,
-          width: 1080,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 12,
+          top: 856,
+          left: 100,
+          width: 880,
+          padding: "22px 26px",
+          borderRadius: 28,
+          background: "rgba(16,19,23,0.94)",
+          border: `1px solid ${C.mintBd}`,
+          boxShadow: SH.card,
           zIndex: 6,
-          opacity: ip(f, [50, 64], [0, 1]),
+          opacity: ip(f, [112, 124], [0, 1]),
+          transform: `translateY(${(1 - result) * 22}px) scale(${lerp(0.96, 1, result)})`,
         }}
       >
-        <ShieldCheck size={28} color={C.muted} strokeWidth={2} />
-        <span style={{ ...body, fontSize: 28, color: C.muted }}>
-          Hanya nomor terdaftar yang bisa membuka catatanmu
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Logo size={42} />
+          <div style={{ flex: 1 }}>
+            <div style={{ ...body, fontSize: 21, fontWeight: 600, color: C.mint }}>kandai.my.id</div>
+            <div style={{ ...body, fontSize: 26, fontWeight: 700, color: C.ink, marginTop: 2 }}>
+              KAND AI — jurnal &amp; keuangan lewat WhatsApp
+            </div>
+          </div>
+        </div>
+        <div style={{ ...body, fontSize: 22, color: C.muted, marginTop: 12 }}>
+          Chat, catat, dan lihat laporanmu. Semua dari WhatsApp.
+        </div>
       </div>
     </AbsoluteFill>
   );
@@ -1466,8 +1660,9 @@ const Portal: React.FC<{
   color?: string;
 }> = ({ dur, cx, cy, color }) => {
   const f = useCurrentFrame();
-  const p = ip(f, [0, Math.min(28, dur - 14)], [0, 1], easeIn);
-  const fade = ip(f, [dur - 20, dur], [1, 0], easeIO);
+  const p = ip(f, [0, Math.min(32, dur - 12)], [0, 1], easeOut);
+  const fade = ip(f, [dur - 24, dur], [1, 0], easeOut);
+  const inO = ip(f, [0, 10], [0, 1], easeOut);
   const r = p * 2400;
   return (
     <div
@@ -1481,7 +1676,7 @@ const Portal: React.FC<{
         background:
           color ??
           `radial-gradient(circle at 42% 38%, ${C.lime} 0%, ${C.mint} 46%, ${C.mintD} 100%)`,
-        opacity: p > 0 ? fade : 0,
+        opacity: p > 0 ? inO * fade : 0,
         zIndex: 20,
       }}
     />
@@ -1490,8 +1685,9 @@ const Portal: React.FC<{
 
 const BlockSweep: React.FC<{ dur: number }> = ({ dur }) => {
   const f = useCurrentFrame();
-  const p = ip(f, [0, 20], [0, 1], easeIO);
-  const fade = ip(f, [dur - 16, dur], [1, 0], easeIO);
+  const p = ip(f, [0, 26], [0, 1], easeOut);
+  const fade = ip(f, [dur - 22, dur], [1, 0], easeOut);
+  const inO = ip(f, [0, 16], [0, 1], easeOut);
   return (
     <div
       style={{
@@ -1500,10 +1696,11 @@ const BlockSweep: React.FC<{ dur: number }> = ({ dur }) => {
         top: 0,
         width: 1080,
         height: 1920,
-        background: `linear-gradient(140deg,${C.mint} 0%,${C.lime} 58%,${C.mintD} 100%)`,
-        opacity: fade,
-        transform: `scaleY(${lerp(0.04, 1, p)})`,
+        background: `radial-gradient(80% 60% at 50% 46%, ${C.lime} 0%, ${C.mint} 52%, ${C.mintD} 100%)`,
+        opacity: inO * fade * 0.92,
+        transform: `scaleY(${lerp(0.02, 1, p)})`,
         transformOrigin: "50% 54%",
+        filter: "blur(2px)",
         zIndex: 20,
       }}
     />
@@ -1558,11 +1755,8 @@ export const VideoAI: React.FC = () => {
       <Sequence from={512} durationInFrames={44}>
         <Portal dur={44} cx={742} cy={1260} />
       </Sequence>
-      <Sequence from={838} durationInFrames={40}>
-        <BlockSweep dur={40} />
-      </Sequence>
-      <Sequence from={1018} durationInFrames={44}>
-        <Portal dur={44} cx={540} cy={930} />
+      <Sequence from={826} durationInFrames={46}>
+        <BlockSweep dur={46} />
       </Sequence>
 
       {/* audio */}
