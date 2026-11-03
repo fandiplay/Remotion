@@ -14,14 +14,17 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
   Easing,
   Sequence,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import { loadFont } from "@remotion/google-fonts/Poppins";
+import timing from "./vo-timing.json";
 
 const { fontFamily } = loadFont("normal", {
   weights: ["500", "600", "800"],
@@ -259,9 +262,27 @@ const buildCues = (s: SceneDef): Cue[] => {
 };
 
 /** Isi dengan cue timestamp asli jika sudah ada audio. null = pakai cue otomatis. */
-const SUBTITLE_OVERRIDE: Cue[] | null = null;
+const SUBTITLE_OVERRIDE: Cue[] | null = timing.length
+  ? timing.map((t) => ({ from: t.cueFrom, to: t.cueTo, text: t.text }))
+  : null;
 
 const CUES: Cue[] = SUBTITLE_OVERRIDE ?? SCENES.flatMap(buildCues);
+
+/** Voice over: satu audio per kalimat, dijadwalkan dari durasi mp3 asli. */
+const VoiceOver: React.FC = () => (
+  <>
+    {timing.map((t) => (
+      <Sequence
+        key={t.key}
+        from={t.from}
+        durationInFrames={t.durationInFrames}
+        name={`VO ${t.key}`}
+      >
+        <Audio src={staticFile(t.file)} playbackRate={t.rate} />
+      </Sequence>
+    ))}
+  </>
+);
 
 /* ═══════════════════════════════════════════════════════════════════
  * IKLAN ILUSTRATIF (bukan logo/merek asli)
@@ -1987,6 +2008,7 @@ export const IklanStadion: React.FC = () => (
         </Sequence>
       );
     })}
+    <VoiceOver />
     <TopLogo />
     <Subtitle />
     {SHOW_MARKERS ? <MarkerHud /> : null}

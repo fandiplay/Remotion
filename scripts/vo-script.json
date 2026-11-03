@@ -1,0 +1,10 @@
+{"fps":30,"scenes":[
+{"no":"01","from":0,"dur":180,"lines":["Kok bisa ya, iklan di papan stadion *berbeda*,","padahal pertandingan yang ditonton sama?"]},
+{"no":"02","from":180,"dur":330,"lines":["Rahasianya ada di teknologi *virtual advertising*.","Iklan bisa diganti khusus pada gambar siaran televisi,","tanpa harus mengganti tampilan yang dilihat penonton di *stadion*."]},
+{"no":"03","from":510,"dur":300,"lines":["Jadi, orang di tribun bisa melihat iklan *fisik* yang sama.","Sementara penonton di negara berbeda","menerima versi siaran dengan iklan *berbeda*."]},
+{"no":"04","from":810,"dur":600,"lines":["Salah satu pendekatan yang dikembangkan *Fraunhofer*","memakai trik waktu.","Dalam satu siklus *20 milidetik*,","papan menampilkan iklan selama 18 milidetik,","lalu warna magenta selama dua milidetik.","Kamera diatur untuk menangkap *kilatan* singkat itu."]},
+{"no":"05","from":1410,"dur":420,"lines":["Di studio, area *magenta* pada rekaman","diganti dengan iklan yang ditargetkan.","Ini teknik *chroma key*, mirip prinsip green screen,","tetapi warna kuncinya muncul sesaat dari panel LED."]},
+{"no":"06","from":1830,"dur":390,"lines":["Supaya iklan baru tetap menempel saat kamera bergerak,","sistem *melacak* sudut dan arah kamera.","Pemain yang melintas di depannya","juga harus tetap *natural*."]},
+{"no":"07","from":2220,"dur":480,"lines":["Ada *pendekatan* lain.","Platform seperti Supponor memproses sinyal siaran","dengan perangkat lunak berbasis *AI* dan machine learning,","lalu menampilkan pesan yang disesuaikan untuk pasar tertentu.","Jadi, tidak semua sistem memakai trik yang *sama*."]},
+{"no":"08","from":2700,"dur":450,"lines":["Intinya, yang berubah bukan stadionnya,","melainkan gambar *siaran* yang kamu tonton.","Satu pertandingan bisa punya beberapa versi iklan.","Besok penasaran apa lagi?","*Follow* Rumah Penasaran."]}
+]}
