@@ -5,6 +5,7 @@ import { VideoAI, VIDEO_AI_DURATION } from "./VideoAI";
 import { KandAIStory, KAND_AI_STORY_DURATION, KAND_AI_STORY_FPS } from "./story/Story";
 import { DemoKonflik } from "./story/DemoKonflik";
 import { KandAIPromo, KAND_AI_PROMO_DURATION, KAND_AI_PROMO_FPS } from "./kandai-promo/Promo";
+import { RumahBaru, RUMAH_BARU_CONFIG } from "./rumahbaru";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -48,6 +49,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id={RUMAH_BARU_CONFIG.id}
+        component={RumahBaru}
+        durationInFrames={RUMAH_BARU_CONFIG.durationInFrames}
+        fps={RUMAH_BARU_CONFIG.fps}
+        width={RUMAH_BARU_CONFIG.width}
+        height={RUMAH_BARU_CONFIG.height}
       />
     </>
   );

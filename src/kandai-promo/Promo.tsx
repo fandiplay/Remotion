@@ -1,5 +1,5 @@
 import type React from "react";
-import { AbsoluteFill, Sequence, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Sequence, useCurrentFrame, Audio, staticFile } from "remotion";
 import { WorldCanvas, type CameraShot } from "./camera";
 import { Subtitles } from "./Subtitles";
 import { VoiceOver } from "./VoiceOver";
@@ -80,7 +80,8 @@ export const KandAIPromo: React.FC = () => (
     </AbsoluteFill>
 
     <Subtitles />
-    <VoiceOver />
+    <Audio src={staticFile("audio/promo-bgm.mp3")} volume={0.12} />
+      <VoiceOver />
   </AbsoluteFill>
 );
 

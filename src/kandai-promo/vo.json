@@ -1,6 +1,10 @@
 {
   "hook": 7.36,
   "chaos": 10.96,
-  "discover": 10,
+  "discover": 10.0,
+  "wallet": 4.04,
+  "journal": 4.96,
+  "learn": 4.12,
+  "reminder": 4.68,
   "outro": 11.52
 }
