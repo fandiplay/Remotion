@@ -26,19 +26,18 @@
 import React, {createContext, useContext} from 'react';
 import {
 	AbsoluteFill,
+	Audio,
 	Easing,
 	Sequence,
 	interpolate,
 	spring,
+	staticFile,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
 import {loadFont} from '@remotion/google-fonts/Poppins';
 import {Brain, Flag, Maximize, Package, Target, Wrench} from 'lucide-react';
-
-// Kalau mau pakai audio nanti (tidak diperlukan sekarang):
-// import {Audio, staticFile} from 'remotion';
-// <Audio src={staticFile('Generated_Audio_November_04__2026_-_3_20PM.wav')} />
+import sfxMeta from './sfx-meta.json';
 
 const {fontFamily} = loadFont('normal', {
 	weights: ['500', '600', '800'],
@@ -46,6 +45,7 @@ const {fontFamily} = loadFont('normal', {
 });
 
 const SHOW_DEBUG = false;
+const ENABLE_SFX = true;
 
 /* ------------------------------------------------------------------ */
 /* Identitas                                                           */
@@ -1094,7 +1094,6 @@ const SceneMatriks: React.FC = () => {
 /* ------------------------------------------------------------------ */
 
 const SceneChaining: React.FC = () => {
-	const g = useG();
 	const times = [cue('hasil').s, cue('mundur').s, cue('syarat').s, cue('awal').s];
 	const labels = ['Hasil akhir', 'Syarat B', 'Syarat A', 'Titik awal'];
 	const inversion = cue('inversion').s;
@@ -1554,6 +1553,119 @@ const VIEWS: Record<SectionId, React.FC> = {
 	outro: SceneOutro,
 };
 
+type SfxName =
+	| 'pop'
+	| 'whoosh'
+	| 'tick'
+	| 'ding'
+	| 'swap'
+	| 'charge'
+	| 'zap'
+	| 'sparkle'
+	| 'blip'
+	| 'lock'
+	| 'power';
+
+/**
+ * at:
+ *  - "id"          -> awal cue dengan id itu (cue(id).s)
+ *  - "mid:id"      -> titik tengah cue itu
+ *  - "start:bagian"-> awal bagian (SECTIONS[].from), contoh "start:ipo"
+ *  - "abs"         -> frame global langsung (off = frame)
+ * off = geser dalam frame (boleh negatif).
+ */
+type SfxCue = {at: string; off: number; name: SfxName; vol: number};
+
+/** Atur keras-pelannya semua SFX di sini (1 = default). */
+const SFX_MASTER = 1;
+
+const SFX_CUES: SfxCue[] = [
+	// 01 hook
+	{at: 'abs', off: 2, name: 'pop', vol: 0.35},
+	{at: 'abs', off: 8, name: 'pop', vol: 0.3},
+	{at: 'rumit', off: 0, name: 'blip', vol: 0.2},
+	{at: 'rumit', off: 6, name: 'blip', vol: 0.2},
+	{at: 'rumit', off: 12, name: 'blip', vol: 0.2},
+	{at: 'rumit', off: 18, name: 'blip', vol: 0.2},
+	{at: 'bingung', off: 0, name: 'zap', vol: 0.22},
+	// 02 masalah
+	{at: 'start:masalah', off: 0, name: 'whoosh', vol: 0.25},
+	{at: 'tools', off: 0, name: 'pop', vol: 0.3},
+	{at: 'struktur', off: 0, name: 'ding', vol: 0.3},
+	{at: 'tanpa', off: 0, name: 'zap', vol: 0.22},
+	// 03 matriks
+	{at: 'start:matriks', off: 0, name: 'whoosh', vol: 0.25},
+	{at: 'pertama', off: 0, name: 'pop', vol: 0.3},
+	{at: 'kuadran', off: 0, name: 'tick', vol: 0.15},
+	{at: 'q1', off: 0, name: 'tick', vol: 0.15},
+	{at: 'q2', off: 0, name: 'tick', vol: 0.15},
+	{at: 'q3', off: 0, name: 'lock', vol: 0.22},
+	{at: 'q4', off: 0, name: 'tick', vol: 0.15},
+	{at: 'q4', off: 20, name: 'sparkle', vol: 0.28},
+	// 04 chaining
+	{at: 'start:chaining', off: 0, name: 'whoosh', vol: 0.25},
+	{at: 'inversion', off: 6, name: 'pop', vol: 0.25},
+	{at: 'hasil', off: 0, name: 'tick', vol: 0.15},
+	{at: 'mundur', off: 0, name: 'tick', vol: 0.15},
+	{at: 'syarat', off: 0, name: 'tick', vol: 0.15},
+	{at: 'awal', off: 0, name: 'tick', vol: 0.15},
+	{at: 'mundur', off: 6, name: 'blip', vol: 0.18},
+	{at: 'syarat', off: 6, name: 'blip', vol: 0.18},
+	{at: 'awal', off: 6, name: 'blip', vol: 0.18},
+	{at: 'awal', off: 18, name: 'ding', vol: 0.28},
+	// 05 ipo
+	{at: 'start:ipo', off: 0, name: 'whoosh', vol: 0.25},
+	{at: 'in', off: 0, name: 'tick', vol: 0.15},
+	{at: 'mid:in', off: 0, name: 'tick', vol: 0.15},
+	{at: 'out', off: 0, name: 'tick', vol: 0.15},
+	{at: 'list', off: 0, name: 'lock', vol: 0.22},
+	{at: 'chain', off: 0, name: 'power', vol: 0.32}, // satu-satunya momen "wow"
+	{at: 'chain', off: 14, name: 'sparkle', vol: 0.3},
+	// 06 penutup
+	{at: 'start:penutup', off: 0, name: 'whoosh', vol: 0.25},
+	{at: 'pelaksana', off: 4, name: 'pop', vol: 0.25},
+	{at: 'arsi', off: 0, name: 'ding', vol: 0.28},
+	{at: 'arah', off: 0, name: 'whoosh', vol: 0.22},
+	{at: 'tanya', off: 0, name: 'sparkle', vol: 0.3},
+	// 07 outro
+	{at: 'start:outro', off: 0, name: 'whoosh', vol: 0.22},
+	{at: 'start:outro', off: 4, name: 'pop', vol: 0.25},
+	{at: 'start:outro', off: 12, name: 'ding', vol: 0.3},
+];
+
+const sfxFrame = (c: SfxCue): number => {
+	if (c.at === 'abs') return c.off;
+	if (c.at.startsWith('start:')) {
+		const s = SECTIONS.find((x) => x.id === c.at.slice(6));
+		return sec(s ? s.from : 0) + c.off;
+	}
+	if (c.at.startsWith('mid:')) {
+		const k = cue(c.at.slice(4));
+		return Math.round((k.s + k.e) / 2) + c.off;
+	}
+	return cue(c.at).s + c.off;
+};
+
+const SfxLayer: React.FC = () => (
+	<>
+		{SFX_CUES.map((c, i) => {
+			const from = sfxFrame(c);
+			const frames = (sfxMeta as Record<string, {frames: number}>)[c.name].frames + 2;
+			return (
+				<Sequence
+					key={`${c.at}-${c.off}-${c.name}-${i}`}
+					from={from}
+					durationInFrames={frames}
+					name={`SFX ${c.name}`}
+					layout="none"
+				>
+					<Audio src={staticFile(`sfx/${c.name}.wav`)} volume={c.vol * SFX_MASTER} />
+				</Sequence>
+			);
+		})}
+	</>
+);
+
 const DebugMarker: React.FC = () => {
 	const f = useCurrentFrame();
 	const s = SECTIONS.find((x) => f >= sec(x.from) && f < sec(x.to)) ?? SECTIONS[6];
@@ -1589,6 +1701,7 @@ export const ArsitekturBerpikir: React.FC = () => {
 					</Scene>
 				);
 			})}
+			{ENABLE_SFX && <SfxLayer />}
 			<Subtitles />
 			{SHOW_DEBUG && <DebugMarker />}
 		</AbsoluteFill>

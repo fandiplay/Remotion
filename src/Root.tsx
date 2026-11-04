@@ -10,6 +10,7 @@ import { RumahBaru, RUMAH_BARU_CONFIG } from "./rumahbaru";
 
 import { IklanStadion, IKLAN_STADION_CONFIG } from "./iklanstadion";
 import {ArsitekturBerpikir, ARSITEKTUR_BERPIKIR} from './arsitekturberpikir';
+import {Sitara, SITARA} from './sitara';
 
 
 export const RemotionRoot: React.FC = () => {
@@ -71,6 +72,9 @@ export const RemotionRoot: React.FC = () => {
   width={ARSITEKTUR_BERPIKIR.width}
   height={ARSITEKTUR_BERPIKIR.height}
 />
+<Composition id={SITARA.id} component={Sitara}
+  durationInFrames={SITARA.durationInFrames} fps={SITARA.fps}
+  width={SITARA.width} height={SITARA.height} />
     </>
   );
 };
