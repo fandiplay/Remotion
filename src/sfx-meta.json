@@ -1,0 +1,46 @@
+{
+  "pop": {
+    "seconds": 0.22,
+    "frames": 7
+  },
+  "whoosh": {
+    "seconds": 0.7,
+    "frames": 21
+  },
+  "tick": {
+    "seconds": 0.06,
+    "frames": 2
+  },
+  "ding": {
+    "seconds": 1,
+    "frames": 30
+  },
+  "swap": {
+    "seconds": 0.5,
+    "frames": 15
+  },
+  "charge": {
+    "seconds": 3,
+    "frames": 90
+  },
+  "zap": {
+    "seconds": 0.4,
+    "frames": 12
+  },
+  "sparkle": {
+    "seconds": 1.4,
+    "frames": 42
+  },
+  "blip": {
+    "seconds": 0.14,
+    "frames": 5
+  },
+  "lock": {
+    "seconds": 0.3,
+    "frames": 9
+  },
+  "power": {
+    "seconds": 0.8,
+    "frames": 24
+  }
+}

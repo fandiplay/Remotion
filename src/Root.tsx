@@ -9,6 +9,8 @@ import { KandAIPromo, KAND_AI_PROMO_DURATION, KAND_AI_PROMO_FPS } from "./kandai
 import { RumahBaru, RUMAH_BARU_CONFIG } from "./rumahbaru";
 
 import { IklanStadion, IKLAN_STADION_CONFIG } from "./iklanstadion";
+import {ArsitekturBerpikir, ARSITEKTUR_BERPIKIR} from './arsitekturberpikir';
+
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -61,6 +63,14 @@ export const RemotionRoot: React.FC = () => {
         width={IKLAN_STADION_CONFIG.width}
         height={IKLAN_STADION_CONFIG.height}
       />
+<Composition
+  id="ArsitekturBerpikir"
+  component={ArsitekturBerpikir}
+  durationInFrames={ARSITEKTUR_BERPIKIR.durationInFrames}
+  fps={ARSITEKTUR_BERPIKIR.fps}
+  width={ARSITEKTUR_BERPIKIR.width}
+  height={ARSITEKTUR_BERPIKIR.height}
+/>
     </>
   );
 };
