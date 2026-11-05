@@ -11,6 +11,8 @@ import { RumahBaru, RUMAH_BARU_CONFIG } from "./rumahbaru";
 import { IklanStadion, IKLAN_STADION_CONFIG } from "./iklanstadion";
 import {ArsitekturBerpikir, ARSITEKTUR_BERPIKIR} from './arsitekturberpikir';
 import {Sitara, SITARA} from './sitara';
+import { DnaVideo, DNA_FPS, DNA_WIDTH, DNA_HEIGHT, DNA_DURATION_IN_FRAMES } from "./dna";
+import {Fisika, FISIKA_DURATION, FISIKA_FPS, FISIKA_WIDTH, FISIKA_HEIGHT} from './fisika';
 
 
 export const RemotionRoot: React.FC = () => {
@@ -64,7 +66,7 @@ export const RemotionRoot: React.FC = () => {
         width={IKLAN_STADION_CONFIG.width}
         height={IKLAN_STADION_CONFIG.height}
       />
-<Composition
+      <Composition
   id="ArsitekturBerpikir"
   component={ArsitekturBerpikir}
   durationInFrames={ARSITEKTUR_BERPIKIR.durationInFrames}
@@ -72,9 +74,14 @@ export const RemotionRoot: React.FC = () => {
   width={ARSITEKTUR_BERPIKIR.width}
   height={ARSITEKTUR_BERPIKIR.height}
 />
-<Composition id={SITARA.id} component={Sitara}
+      <Composition id={SITARA.id} component={Sitara}
   durationInFrames={SITARA.durationInFrames} fps={SITARA.fps}
   width={SITARA.width} height={SITARA.height} />
+      <Composition id="Dna" component={DnaVideo} fps={DNA_FPS}
+  width={DNA_WIDTH} height={DNA_HEIGHT} durationInFrames={DNA_DURATION_IN_FRAMES} />
+      <Composition id="Fisika" component={Fisika}
+  durationInFrames={FISIKA_DURATION} fps={FISIKA_FPS}
+  width={FISIKA_WIDTH} height={FISIKA_HEIGHT} />
     </>
   );
 };
