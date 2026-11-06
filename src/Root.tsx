@@ -13,6 +13,8 @@ import {ArsitekturBerpikir, ARSITEKTUR_BERPIKIR} from './arsitekturberpikir';
 import {Sitara, SITARA} from './sitara';
 import { DnaVideo, DNA_FPS, DNA_WIDTH, DNA_HEIGHT, DNA_DURATION_IN_FRAMES } from "./dna";
 import {Fisika, FISIKA_DURATION, FISIKA_FPS, FISIKA_WIDTH, FISIKA_HEIGHT} from './fisika';
+import { Kurs, KURS_DURATION, KURS_FPS } from "./kurs";
+
 
 
 export const RemotionRoot: React.FC = () => {
@@ -82,6 +84,8 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="Fisika" component={Fisika}
   durationInFrames={FISIKA_DURATION} fps={FISIKA_FPS}
   width={FISIKA_WIDTH} height={FISIKA_HEIGHT} />
+      <Composition id="Kurs" component={Kurs} durationInFrames={KURS_DURATION}
+  fps={KURS_FPS} width={1080} height={1920} />
     </>
   );
 };
